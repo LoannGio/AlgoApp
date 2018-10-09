@@ -25,6 +25,8 @@
 \usepackage{sectsty}
 \usepackage{url}
 \usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+
 
 \newcommand{\HRule}[1]{\rule{\linewidth}{#1}}
 \onehalfspacing
@@ -46,10 +48,10 @@
 
 \begin{document}
 
-\title{ \normalsize \textsc{Module}
+\title{ \normalsize \textsc{Algorithmique Appliquée}
 		\\ [2.0cm]
 		\HRule{0.5pt} \\
-		\LARGE \textbf{\uppercase{Title}}
+		\LARGE \textbf{\uppercase{Projet RoboCup}}
 		\HRule{2pt} \\ [0.5cm]
 		\normalsize \today \vspace*{5\baselineskip}}
 
@@ -59,6 +61,7 @@
 		Loann Giovannangeli, Fabien Jacques, Jonathan Narboni}
 
 \maketitle
+\renewcommand{\contentsname}{Sommaire}
 \tableofcontents
 \newpage
 
@@ -72,7 +75,12 @@
 %-------------------------------------------------------------------------------
 
 \chapter*{Modélisation du Problème}
-On modélise le problème ainsi :
+
+L'objectif de ce projet est de trouver une modélisation du problème de défense d'un but lors de la RoboCup. Ce problème consiste à trouver une manière optimale de placer les défenseurs par rapports à l'emplacement de leur but et des attaquants.
+
+Ce document présente les premières idées de modélisation que nous avons après les premiers TD.\\
+
+Voici comment nous modélisons le problème :
 \newline
 \newline
 \section{Entrées}
@@ -116,13 +124,9 @@ Si on veut éviter d'avoir des robots qui rentrent en collision, on peut ajouter
 %-------------------------------------------------------------------------------
 % REFERENCES
 %-------------------------------------------------------------------------------
-\newpage
-\section*{References}
-\addcontentsline{toc}{section}{References}
-
-Anand, U., 2010. The Elusive Free Radicals, \textit{The Clinical Chemist,} [e-journal] Available at:<\url{http://www.clinchem.org/content/56/10/1649.full.pdf}> [Accessed 2 November 2013]
-\newline
-\newline
+%\newpage
+%\section*{References}
+%\addcontentsline{toc}{section}{References}
 
 \end{document}
 
