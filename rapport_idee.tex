@@ -178,7 +178,7 @@ Pour trouver cet ensemble on peut essayer avec 1, puis 2, puis 3, etc. On sait q
 
 \section{Extensions}
 \subsection{Gestion des collisions}
-Si on veut éviter d'avoir des robots qui rentrent en collision, on peut ajouter une arête entre chaque paire de sommets défenseurs pour lesquels avoir un défenseur sur chacune des positions causerai une collision. Une solution du problème qui évite les collisions doit alors avoir comme condition supplémentaire d'être un ensemble de sommets stable. Notons que si deux sommets défenseurs sont adjacents, c'est qu'ils sont aussi adjacent à un sommet attaquant commun.\\
+Si on veut éviter d'avoir des robots qui rentrent en collision, on peut ajouter une arête entre chaque paire de sommets défenseurs pour lesquels avoir un défenseur sur chacune des positions causerai une collision. Une solution du problème qui évite les collisions doit alors avoir comme condition supplémentaire d'être un ensemble de sommets stable.\\
 Le graphe du problème devient alors:\\ \bigbreak
 \begin{figure}[H]
 	\centering
@@ -226,6 +226,7 @@ Le graphe du problème devient alors:\\ \bigbreak
 		\path (d3) edge[coll edge] (d2);
 		\path (d2) edge[coll edge] (d1);
 		\path (d3) edge[coll edge,bend right] (d1);
+		\path (d6) edge[coll edge, bend left] (d14);
 		
 		
 		
