@@ -26,6 +26,17 @@
 \usepackage{url}
 \usepackage{lmodern}
 \usepackage[utf8]{inputenc}
+\usepackage {tikz}
+\usepackage{float}
+\usetikzlibrary {positioning}
+\usetikzlibrary{calc}
+
+
+\definecolor{DarkGreen}{RGB}{0,140,0}
+\definecolor{DarkBlue}{RGB}{0,0,160}
+\definecolor{DarkRed}{RGB}{220,0,0}
+\definecolor{DarkPurple}{RGB}{160,0,160}
+
 
 
 \newcommand{\HRule}[1]{\rule{\linewidth}{#1}}
@@ -101,7 +112,56 @@ Soient :
 \space
 
 \section{Graphe} \bigbreak
-On crée le graphe G suivant :
+On crée le graphe G suivant :\\
+\begin{figure}[H]
+	\centering
+	\scalebox{1.3}
+	{
+		
+		\begin{tikzpicture}[scale=2, transform shape,atq node/.style={shape=rectangle,scale=1,draw=black},def node/.style={scale=0.5, shape=circle,draw=black,inner sep=0,text width=35,align=center}, ]
+		\node[atq node] (atq1) at (0,0){$o_i,k$};
+		\node[atq node] (atq2) at (0,3){$o_j,k'$};
+		\node[atq node] (atq3) at (2,1.5){$o_l,k''$};
+		\newcounter{nDef};
+		%def position + basic path
+		\foreach \x in {0,...,3}
+		{
+			\node[def node] (d\arabic{nDef}) at ($(atq1)+(\x*30:1.5)$){$x_{\arabic{nDef}}$,$y_{\arabic{nDef}}$};
+			\path (atq1) edge (d\arabic{nDef});
+			\stepcounter{nDef};
+			
+		}
+		\foreach \x in {11,...,16}
+		{
+			\node[def node] (d\arabic{nDef}) at ($(atq2)+(\x*30:1.5)$){$x_{\arabic{nDef}}$,$y_{\arabic{nDef}}$};
+			\path (atq2) edge (d\arabic{nDef});
+			\stepcounter{nDef};
+			
+		}
+		\foreach \x in {10,...,14}
+		{
+			\node[def node] (d\arabic{nDef}) at ($(atq3)+(\x*30:1.5)$){$x_{\arabic{nDef}}$,$y_{\arabic{nDef}}$};
+			\path (atq3) edge (d\arabic{nDef});
+			\stepcounter{nDef};
+			
+		}
+		
+		%additionnal path
+		\path (atq2) edge (d3);
+		\path (atq2) edge (d3);
+		\path (atq3) edge (d0);
+		\path (atq3) edge (d4);
+		\path (atq3) edge (d5);
+		
+		
+		
+		
+		
+		\end{tikzpicture}
+		
+	}
+\caption{Exemple de modélisation avec 3 tirs possibles: ici \{($x_3,y_3$), ($x_5,y_5$)\} est une solution.}
+\end{figure}
 \subsection{Sommets attaquants}
 $\forall i \in \{1, ..., n\}$, $\forall k \in \{0, ..., K_{max} \}$
 
@@ -118,7 +178,63 @@ Pour trouver cet ensemble on peut essayer avec 1, puis 2, puis 3, etc. On sait q
 
 \section{Extensions}
 \subsection{Gestion des collisions}
-Si on veut éviter d'avoir des robots qui rentrent en collision, on peut ajouter une arête entre chaque paire de sommets défenseurs pour lesquels avoir un défenseur sur chacune des positions causerai une collision. Une solution du problème qui évite les collisions doit alors avoir comme condition supplémentaire d'être un ensemble de sommets stable.
+Si on veut éviter d'avoir des robots qui rentrent en collision, on peut ajouter une arête entre chaque paire de sommets défenseurs pour lesquels avoir un défenseur sur chacune des positions causerai une collision. Une solution du problème qui évite les collisions doit alors avoir comme condition supplémentaire d'être un ensemble de sommets stable. Notons que si deux sommets défenseurs sont adjacents, c'est qu'ils sont aussi adjacent à un sommet attaquant commun.\\
+Le graphe du problème devient alors:\\ \bigbreak
+\begin{figure}[H]
+	\centering
+	\scalebox{1.3}
+	{
+		
+		\begin{tikzpicture}[scale=2, transform shape,atq node/.style={shape=rectangle,scale=1,draw=black},def node/.style={scale=0.5, shape=circle,draw=black,inner sep=0,text width=35,align=center},coll edge/.append style={color=DarkRed,line width=1.5}]
+		\node[atq node] (atq1) at (0,0){$o_i,k$};
+		\node[atq node] (atq2) at (0,3){$o_j,k'$};
+		\node[atq node] (atq3) at (2,1.5){$o_l,k''$};
+		\setcounter{nDef}{0}
+		%def position + basic path
+		\foreach \x in {0,...,3}
+		{
+			\node[def node] (d\arabic{nDef}) at ($(atq1)+(\x*30:1.5)$){$x_{\arabic{nDef}}$,$y_{\arabic{nDef}}$};
+			\path (atq1) edge (d\arabic{nDef});
+			\stepcounter{nDef};
+			
+		}
+		\foreach \x in {11,...,16}
+		{
+			\node[def node] (d\arabic{nDef}) at ($(atq2)+(\x*30:1.5)$){$x_{\arabic{nDef}}$,$y_{\arabic{nDef}}$};
+			\path (atq2) edge (d\arabic{nDef});
+			\stepcounter{nDef};
+			
+		}
+		\foreach \x in {10,...,14}
+		{
+			\node[def node] (d\arabic{nDef}) at ($(atq3)+(\x*30:1.5)$){$x_{\arabic{nDef}}$,$y_{\arabic{nDef}}$};
+			\path (atq3) edge (d\arabic{nDef});
+			\stepcounter{nDef};
+			
+		}
+		
+		%additionnal path
+		\path (atq2) edge (d3);
+		\path (atq2) edge (d3);
+		\path (atq3) edge (d0);
+		\path (atq3) edge (d4);
+		\path (atq3) edge (d5);
+		
+		%collision path
+		\path (d4) edge[coll edge] (d5);
+		\path (d3) edge[coll edge] (d5);
+		\path (d3) edge[coll edge] (d2);
+		\path (d2) edge[coll edge] (d1);
+		\path (d3) edge[coll edge,bend right] (d1);
+		
+		
+		
+		
+		\end{tikzpicture}
+		
+	}
+	\caption{Modélisation des collision: les arêtes représentant les collisions sont en rouge, ici, \{($x_3,y_3$), ($x_5,y_5$)\} n'est plus solution, car ils sont adjacents; par contre \{($x_3,y_3$), ($x_0,y_0$)\} est une solution.}
+\end{figure}
 
 
 %-------------------------------------------------------------------------------
