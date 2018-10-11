@@ -1,0 +1,11 @@
+décrire idée générale avant modélisation du problème
+couleur dans schémas
+ne pas décrire comment on construit le graphe (d'un point de vu de la programmation) mais comment est le graphe
+affirmation n défenseurs suffisants à enlever
+préciser comment on calcul une solution
+expliquer pourquoi ça modélise bien le problème (pour extension aussi)
+ajouter autres extensions
+refaire schéma
+définition kmax : dire plutôt 2pi / theta step arrondi à l'inférieur
+rajouter définitions : stable, ensemble dominant (en annexe)
+
