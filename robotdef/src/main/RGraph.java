@@ -1,0 +1,351 @@
+package main;
+
+import java.awt.Point;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.Vector;
+
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+
+public class RGraph extends SimpleGraph<Entry<Point2D,Boolean>, DefaultEdge>
+{
+
+	public RGraph(String filename,boolean collision)
+	{
+		super(DefaultEdge.class);
+		String problemString = readFile(filename);
+		JSONObject problemObject = new JSONObject(problemString);
+		
+
+		
+		//generating the list of possible position
+		Set<Point2D.Double> listPoint = generatePointList(problemObject);
+		
+		
+		//for each opponent, getting shot on target
+		Set<Line2D.Double> listShotLine =  getShotLineOnTarget(problemObject);
+		
+		
+		
+		for(Line2D.Double l : listShotLine)
+		{
+			addVertex(new SimpleEntry<>(l.getP1(), false));
+		}
+		double robotRadius = getRobotRadius(problemObject);
+		//Set<Point2D.Double> listDefPos = new HashSet<>();
+		
+		for(Line2D.Double line : listShotLine)
+		{
+			for(Point2D.Double pos : listPoint)
+			{
+				//there is a defense position
+				if(line.ptLineDist(pos)<robotRadius && pos.distance(line.getP1())>2.0*robotRadius)
+				{
+					addVertex(new SimpleEntry<>(pos, true));
+					addEdge(new SimpleEntry<>(line.getP1(), false), new SimpleEntry<>(pos,true));
+				}
+			}
+		}
+		
+		if(collision)
+		{
+			for(Entry<Point2D, Boolean> e1 : vertexSet())
+			{
+				for(Entry<Point2D, Boolean> e2 : vertexSet())
+				{
+					if(e1.getValue() && e2.getValue() && e1.getKey().distance(e2.getKey())<2.0*robotRadius)
+					{
+						addEdge(e1, e2);
+					}
+				}
+			}
+		}
+
+		
+
+		
+		
+	}
+	
+	
+	private double getRobotRadius(JSONObject problemObject)
+	{
+		return problemObject.getDouble("robot_radius");
+	}
+	
+	
+	private Set<Entry<Point2D.Double, Point2D.Double>> generateListGoal(JSONObject problemObject)
+	{
+		HashSet<Entry<Point2D.Double, Point2D.Double>> listGoal = new HashSet<>();
+		
+		JSONArray list = problemObject.getJSONArray("goals");
+		for(int i =0;i<list.length();i++)
+		{
+			
+			JSONObject goal = list.getJSONObject(i);
+			
+			JSONArray post = goal.getJSONArray("posts");
+			
+			Point2D.Double p1 = new Point2D.Double(post.getJSONArray(0).getDouble(0), post.getJSONArray(0).getDouble(1));
+			
+			Point2D.Double p2 = new Point2D.Double(post.getJSONArray(1).getDouble(0), post.getJSONArray(1).getDouble(1));
+
+			listGoal.add(new SimpleEntry<>(p1,p2));
+			
+		}
+		
+		return listGoal;
+		
+		
+	}
+	
+	
+	private Set<Line2D.Double> getShotLineOnTarget(JSONObject problemObject)
+	{
+		Set<Line2D.Double>  listShot = new HashSet<>();
+		Set<Point2D.Double> listOpp = generateListOpp(problemObject);
+		Set<Entry<Point2D.Double, Point2D.Double>> listGoal = generateListGoal(problemObject);
+		double thetaStep = problemObject.getDouble("theta_step");
+		for(Point2D.Double opp : listOpp)
+		{
+			Set<Double> listTheta = new HashSet<>();
+			for(Entry<Point2D.Double, Point2D.Double> goal : listGoal)
+			{
+				double theta1 = getAngle(opp,goal.getKey());
+				double theta2 = getAngle(opp,goal.getValue());
+				double thetaMin,thetaMax;
+				if(theta1<= theta2)
+				{
+					thetaMin = theta1;
+					thetaMax = theta2;
+				}
+				else
+				{
+					thetaMin = theta2;
+					thetaMax = theta2;
+				}
+				
+				//check if the angle are good ones
+				for(double thetaK = 0; thetaK<2.0*Math.PI; thetaK+=thetaStep)
+				{
+					if(thetaK<thetaMax && thetaK>thetaMin)
+					{
+						Point2D.Double intersectionPoint = intersection(opp,thetaK,goal.getKey(),goal.getValue());
+						Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
+						listShot.add(shotLine);
+						
+					}
+				}		
+			}
+		}
+		
+		return listShot;
+	}
+	
+	
+	//intersection point between a line passing through p with an angle of theta, and a line passing through p1 and p2
+	private Point2D.Double intersection(Point2D.Double p,double theta,Point2D.Double p1,Point2D.Double p2)
+	{
+
+		//we first compute the cartesian equation for each line, then we solve the system
+		double a1,a2,b1,b2,c1,c2;
+		
+		a1 = Math.sin(theta);
+		b1 = -1.0*Math.cos(theta);
+		c1 = Math.cos(theta)*p.getY() - Math.sin(theta)*p.getX();
+		
+		if(p1.getX() != p2.getX())
+		{
+			a2 = 1.0;
+			b2 = (p1.getY() - p2.getY())/(p2.getX()-p1.getX());
+			c2 = -1.0*p1.getY()-b2*p1.getX();
+		}
+		else
+		{
+			a2 = 0.0;
+			b2 = 1.0;
+			c2 = -1.0*p1.getX();
+		}
+		
+		double x = (b1*c2-c1*b2)/(a1*b2-b1*a2);
+		double y = (c1*a2 - a1*c2)/(a1*b2-b1*a2);
+		
+		Point2D.Double intersectionPoint = new Point2D.Double(x, y);
+		
+		return intersectionPoint;
+		
+	}
+	
+	
+	private double getAngle(Point2D.Double p1,Point2D.Double p2)
+	{
+		double theta = 0;
+		if(p1.getX() != p2.getX())
+		{
+			theta = Math.atan((p2.getY()-p1.getY())/(p2.getX()-p2.getX()))%(2.0*Math.PI);
+			if(p1.getX() > p2.getX())
+			{
+				theta += Math.PI;
+				theta = theta%(2.0*Math.PI);
+			}
+		}
+		else
+		{
+			if(p2.getY() > p1.getY())
+			{
+				return Math.PI/2.0;
+			}
+			else
+			{
+				return -1.0*Math.PI/2.0;
+			}
+			
+		}
+		
+		return theta;
+	}
+	
+	private Set<Point2D.Double> generateListOpp(JSONObject problemObject)
+	{
+		HashSet<Point2D.Double> listOpp = new HashSet<>();
+		
+		JSONArray list = problemObject.getJSONArray("opponents");
+		
+		for(int i =0;i<list.length();i++)
+		{
+			JSONArray pair = list.getJSONArray(i);
+			
+			listOpp.add(new Point2D.Double(pair.getDouble(0), pair.getDouble(1)));
+			
+		}
+		return listOpp;
+	}
+	
+	
+	private Set<Point2D.Double> generateList(JSONObject problemObject, String fieldName)
+	{
+		
+		HashSet<Point2D.Double> listOpp = new HashSet<>();
+		
+		JSONArray list = problemObject.getJSONArray(fieldName);
+		
+		for(int i =0;i<list.length();i++)
+		{
+			JSONArray pair = list.getJSONArray(i);
+			
+			listOpp.add(new Point2D.Double(pair.getDouble(0), pair.getDouble(1)));
+			
+		}
+		return listOpp;
+		
+	}
+
+
+	public static String readFile(String filename) {
+	    String result = "";
+	    try {
+	        BufferedReader br = new BufferedReader(new FileReader(filename));
+	        StringBuilder sb = new StringBuilder();
+	        String line = br.readLine();
+	        while (line != null) {
+	            sb.append(line);
+	            line = br.readLine();
+	        }
+	        result = sb.toString();
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	    }
+	    return result;
+	}
+	
+	
+	
+	private Set<Point2D.Double> generatePointList(JSONObject problemObject)
+	{
+		int precision = 100;
+		HashSet<Point2D.Double> listPoint = new HashSet<>();
+		
+		double posStep = problemObject.getDouble("pos_step");
+		JSONArray arrayField = problemObject.getJSONArray("field_limits");
+		JSONArray arrayXLimit = arrayField.getJSONArray(0);
+		JSONArray arrayYLimit = arrayField.getJSONArray(1);
+		double xMin,xMax,yMin,yMax;
+		xMin = arrayXLimit.getDouble(0);
+		xMax = arrayXLimit.getDouble(1);
+		yMin = arrayYLimit.getDouble(0);
+		yMax = arrayYLimit.getDouble(1);
+		double currentX,currentY;
+		currentX = xMin;
+		currentY = xMax ;
+		while(currentY<xMax )
+		{
+			currentX = xMin;
+			while(currentX < xMax )
+			{
+				double posX = (double)Math.round(currentX*precision)/precision;
+				double posY = (double)Math.round(currentY*precision)/precision;
+				Point2D.Double p = new Point2D.Double(posX,posY);
+				listPoint.add(p);
+				currentX += posStep;
+			}
+			
+			
+			currentY += posStep;
+		}
+		
+		return listPoint;
+	}
+	
+	public class DeltaTheta
+	{
+		
+		public DeltaTheta()
+		{
+			_thetaMin=_thetaMin%(2.0*Math.PI);
+			_thetaMax = _thetaMax%(2.0*Math.PI);
+		}
+		
+		public DeltaTheta(double thetaMin,double thetaMax)
+		{
+			_thetaMin=thetaMin%(2.0*Math.PI);
+			_thetaMax = thetaMax%(2.0*Math.PI);
+		}
+		
+		private double _thetaMin;
+		private double _thetaMax;
+		public double get_thetaMin() {
+			return _thetaMin;
+		}
+
+		public void set_thetaMin(double _thetaMin) 
+		{
+			this._thetaMin = _thetaMin%(2.0*Math.PI);
+		}
+
+		public double get_thetaMax() 
+		{
+			return _thetaMax;
+		}
+
+		public void set_thetaMax(double _thetaMax) 
+		{
+			this._thetaMax = _thetaMax%(2.0*Math.PI);
+		}
+		
+	};
+	
+
+}
