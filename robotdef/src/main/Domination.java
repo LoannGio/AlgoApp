@@ -70,4 +70,24 @@ public class Domination {
 		
 		return true;		
 	}
+	
+	//Vérifie si un ensemble de sommets D domine un sous ensemble de sommets de G d
+		public static <V, E> boolean dominates(SimpleGraph<V, E> G, Set<V> D, Set<V> d){		
+			for(V v : d) {
+				if (D.contains(v))
+					continue;
+				boolean thereIsANeighborInD = false;
+				for(V u : Graphs.neighborSetOf(G, v)) {
+					if (D.contains(u)) {
+						thereIsANeighborInD = true;
+						break;
+					}
+				}
+				if(thereIsANeighborInD)
+					continue;
+				return false;
+			}
+			
+			return true;		
+		}
 }
