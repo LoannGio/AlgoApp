@@ -103,7 +103,7 @@ public class Domination {
 		return null;
 	}
 	
-	//Retourne un plus petit ensemble dominant d'un graphe qui domine un sous-ensemble de sommets d de ce graphe (null si son cardinal est > 6)
+	//Retourne un plus petit ensemble qui domine un sous-ensemble de sommets d d'un graphe (null si son cardinal est > 6)
 	public static <V, E> Set<V> smallestDominatingSet(SimpleGraph<V, E> G, Set<V> d) {
 		for (int i = 0; i <= 6; i++) {
 			for(Set<V> D : SubsetCreator.allSubsetsOfSizeN(G.vertexSet(), i))
