@@ -28,7 +28,7 @@ public class Domination {
 		HashSet D2 = new HashSet<Integer>();
 		D2.add(0);
 		D2.add(1);
-
+		System.out.println("---Test de dominates()---");
 		System.out.println("Test sur C5 avec D = {0, 3}");
 		boolean b = dominates(g, D1);
 		System.out.println(b);
@@ -37,7 +37,7 @@ public class Domination {
 		b = dominates(g, D2);
 		System.out.println(b);
 
-		// Ensemble non dominant de C5
+		//Test de allSubsetsOfSizeN()
 		HashSet D3 = new HashSet<Integer>();
 		for (int i = 0; i < 5; i++) {
 			D3.add(i);
