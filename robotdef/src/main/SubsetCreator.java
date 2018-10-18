@@ -7,32 +7,47 @@ import java.util.Set;
 
 public class SubsetCreator {
 
-	private static <V> void generatePermutations(int n, ArrayList<V> array, ArrayList<Set<V>> permutations) {
-		if (n == 1) {
-			permutations.add(new HashSet(array));
+	/*
+	 * Source : Print all subsets of given size of a set
+	 * https://www.geeksforgeeks.org/print-subsets-given-size-set/
+	 */
+	static <V> void recurs_subsetsOfSizeR(ArrayList<V> vertexes, int numberOfVertexes, int n, int index,
+			ArrayList<V> subset, int i, ArrayList<Set<V>> subsets) {
+		if (index == n) {
+			subsets.add(new HashSet(subset));
 			return;
 		}
-		for (int i = 0; i < n; i++) {
-			generatePermutations(n - 1, array, permutations);
-			if ((n & 1) == 0) {
-				V tmp = array.get(i);
-				array.set(i, array.get(n - 1));
-				array.set(n - 1, tmp);
-			} else {
-				V tmp = array.get(0);
-				array.set(0, array.get(n - 1));
-				array.set(n - 1, tmp);
-			}
-		}
+
+		if (i >= numberOfVertexes)
+			return;
+
+		subset.set(index, vertexes.get(i));
+		recurs_subsetsOfSizeR(vertexes, numberOfVertexes, n, index + 1, subset, i + 1, subsets);
+		recurs_subsetsOfSizeR(vertexes, numberOfVertexes, n, index, subset, i + 1, subsets);
 	}
 
+	// Returns a list of subsets of size n from the set S
 	public static <V> List<Set<V>> allSubsetsOfSizeN(Set<V> S, int n) {
-		ArrayList<V> list = new ArrayList<V>();
+		// Converting Set -> List
+		ArrayList<V> vertexes = new ArrayList<V>();
 		for (V v : S) {
-			list.add(v);
+			vertexes.add(v);
 		}
-		ArrayList<Set<V>> permutations = new ArrayList<Set<V>>();
-		generatePermutations(n, list, permutations);
-		return permutations;
+
+		// subsets = output (list of S's subsets of size n)
+		ArrayList<Set<V>> subsets = new ArrayList<Set<V>>();
+
+		// Tmp list of vertexes. Represents 1 subset
+		ArrayList<V> subset = new ArrayList<V>();
+		/*
+		 * subset is modified threw "set" method thus its momery needs to be
+		 * allocated before. We would like to use a simple array here but as "V"
+		 * is not a type, we can't
+		 */
+		for (int i = 0; i < n; i++) {
+			subset.add(null);
+		}
+		recurs_subsetsOfSizeR(vertexes, vertexes.size(), n, 0, subset, 0, subsets);
+		return subsets;
 	}
 }
