@@ -42,10 +42,7 @@ public class Domination {
 	}
 	
 	//Vérifie si un ensemble de sommets D domine le graphe G
-	public static <V, E> boolean dominates(SimpleGraph<V, E> G, Set<V> D){
-		if(D.isEmpty())
-			return false;
-		
+	public static <V, E> boolean dominates(SimpleGraph<V, E> G, Set<V> D){		
 		for(V v : G.vertexSet()) {
 			if (D.contains(v))
 				continue;

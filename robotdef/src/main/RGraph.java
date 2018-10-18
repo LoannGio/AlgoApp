@@ -15,6 +15,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
+
 public class RGraph extends SimpleGraph<Entry<Point2D, Boolean>, DefaultEdge> {
 
 	public RGraph(String filename, boolean collision) throws JSONException {
@@ -25,7 +27,7 @@ public class RGraph extends SimpleGraph<Entry<Point2D, Boolean>, DefaultEdge> {
 		// generating the list of possible position
 		Set<Point2D.Double> listPoint = generatePointList(problemObject);
 
-		// for each opponent, getting shot on target
+		// for each opponent, getting shots on target
 		Set<Line2D.Double> listShotLine = getShotLineOnTarget(problemObject);
 
 		for (Line2D.Double l : listShotLine) {
@@ -247,38 +249,4 @@ public class RGraph extends SimpleGraph<Entry<Point2D, Boolean>, DefaultEdge> {
 
 		return listPoint;
 	}
-
-	public class DeltaTheta {
-
-		public DeltaTheta() {
-			_thetaMin = _thetaMin % (2.0 * Math.PI);
-			_thetaMax = _thetaMax % (2.0 * Math.PI);
-		}
-
-		public DeltaTheta(double thetaMin, double thetaMax) {
-			_thetaMin = thetaMin % (2.0 * Math.PI);
-			_thetaMax = thetaMax % (2.0 * Math.PI);
-		}
-
-		private double _thetaMin;
-		private double _thetaMax;
-
-		public double get_thetaMin() {
-			return _thetaMin;
-		}
-
-		public void set_thetaMin(double _thetaMin) {
-			this._thetaMin = _thetaMin % (2.0 * Math.PI);
-		}
-
-		public double get_thetaMax() {
-			return _thetaMax;
-		}
-
-		public void set_thetaMax(double _thetaMax) {
-			this._thetaMax = _thetaMax % (2.0 * Math.PI);
-		}
-
-	};
-
 }
