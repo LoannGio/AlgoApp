@@ -41,6 +41,8 @@ public class Domination {
 		System.out.println(b);
 	}
 	
+	
+	
 	//Vérifie si un ensemble de sommets D domine le graphe G
 	public static <V, E> boolean dominates(SimpleGraph<V, E> G, Set<V> D){		
 		for(V v : G.vertexSet()) {
@@ -48,8 +50,10 @@ public class Domination {
 				continue;
 			boolean thereIsANeighborInD = false;
 			for(V u : Graphs.neighborSetOf(G, v)) {
-				if (D.contains(u))
+				if (D.contains(u)) {
 					thereIsANeighborInD = true;
+					break;
+				}
 			}
 			if(thereIsANeighborInD)
 				continue;
