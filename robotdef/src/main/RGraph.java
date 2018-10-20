@@ -38,6 +38,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		// for each opponent, getting shot on target
 		Set<Entry<Line2D.Double,Double>> listShotLine = getShotLineOnTarget(problemObject);
 
+
 		for (Entry<Line2D.Double,Double> l : listShotLine) {
 			addVertex(new RVertex(l.getKey().getP1(),l.getValue(), false));
 		}
@@ -266,38 +267,4 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 
 		return listPoint;
 	}
-
-	public class DeltaTheta {
-
-		public DeltaTheta() {
-			_thetaMin = _thetaMin % (2.0 * Math.PI);
-			_thetaMax = _thetaMax % (2.0 * Math.PI);
-		}
-
-		public DeltaTheta(double thetaMin, double thetaMax) {
-			_thetaMin = thetaMin % (2.0 * Math.PI);
-			_thetaMax = thetaMax % (2.0 * Math.PI);
-		}
-
-		private double _thetaMin;
-		private double _thetaMax;
-
-		public double get_thetaMin() {
-			return _thetaMin;
-		}
-
-		public void set_thetaMin(double _thetaMin) {
-			this._thetaMin = _thetaMin % (2.0 * Math.PI);
-		}
-
-		public double get_thetaMax() {
-			return _thetaMax;
-		}
-
-		public void set_thetaMax(double _thetaMax) {
-			this._thetaMax = _thetaMax % (2.0 * Math.PI);
-		}
-
-	};
-
 }
