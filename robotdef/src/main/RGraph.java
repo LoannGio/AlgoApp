@@ -15,10 +15,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class RGraph extends SimpleGraph<Entry<Point2D, Boolean>, DefaultEdge> {
 
-	public RGraph(String filename, boolean collision) throws JSONException {
+//class representing the model graph of the problem
+public class RGraph extends SimpleGraph<RVertex, DefaultEdge> 
+{
+
+	//vertices are 3-uplets (position,theta,bool): shotline vertices are characterized by their position the angle of the shot and the bool is false;
+	//position vertices are characterized by their position, and the bool is true (the theat angla value is not used in this case.
+	
+	//constructor from JSON file
+	public RGraph(String filename, boolean collision) throws JSONException 
+	{
 		super(DefaultEdge.class);
+		
+		//parsing JSON file
 		String problemString = readFile(filename);
 		JSONObject problemObject = new JSONObject(problemString);
 
@@ -26,41 +36,44 @@ public class RGraph extends SimpleGraph<Entry<Point2D, Boolean>, DefaultEdge> {
 		Set<Point2D.Double> listPoint = generatePointList(problemObject);
 
 		// for each opponent, getting shot on target
-		Set<Line2D.Double> listShotLine = getShotLineOnTarget(problemObject);
+		Set<Entry<Line2D.Double,Double>> listShotLine = getShotLineOnTarget(problemObject);
 
-		for (Line2D.Double l : listShotLine) {
-			addVertex(new SimpleEntry<>(l.getP1(), false));
+		for (Entry<Line2D.Double,Double> l : listShotLine) {
+			addVertex(new RVertex(l.getKey().getP1(),l.getValue(), false));
 		}
 		double robotRadius = getRobotRadius(problemObject);
-		// Set<Point2D.Double> listDefPos = new HashSet<>();
 
-		for (Line2D.Double line : listShotLine) {
+		for (Entry<Line2D.Double,Double> line : listShotLine) {
 			for (Point2D.Double pos : listPoint) {
 				// there is a defense position
-				if (line.ptLineDist(pos) < robotRadius && pos.distance(line.getP1()) > 2.0 * robotRadius) {
-					addVertex(new SimpleEntry<>(pos, true));
-					addEdge(new SimpleEntry<>(line.getP1(), false), new SimpleEntry<>(pos, true));
+				if (line.getKey().ptLineDist(pos) < robotRadius && pos.distance(line.getKey().getP1()) > 2.0 * robotRadius) {
+					addVertex(new RVertex(pos, true));
+					addEdge(new RVertex(line.getKey().getP1(),line.getValue(),false), new RVertex(pos, true));
 				}
 			}
 		}
 
+		//handling collision between defenders
 		if (collision) {
-			for (Entry<Point2D, Boolean> e1 : vertexSet()) {
-				for (Entry<Point2D, Boolean> e2 : vertexSet()) {
-					if (e1.getValue() && e2.getValue() && e1.getKey().distance(e2.getKey()) < 2.0 * robotRadius) {
-						addEdge(e1, e2);
+			for (RVertex v1 : vertexSet()) {
+				for (RVertex v2 : vertexSet()) {
+					if (v1 != v2 && v1.is_goodGuy() && v2.is_goodGuy() && v1.get_position().distance(v2.get_position()) < 2.0 * robotRadius) {
+						addEdge(v1, v2);
 					}
 				}
 			}
 		}
 
 	}
+	
 
-	private double getRobotRadius(JSONObject problemObject) throws JSONException {
+	private double getRobotRadius(JSONObject problemObject) throws JSONException 
+	{
 		return problemObject.getDouble("robot_radius");
 	}
 
-	private Set<Entry<Point2D.Double, Point2D.Double>> generateListGoal(JSONObject problemObject) throws JSONException {
+	private Set<Entry<Point2D.Double, Point2D.Double>> generateListGoal(JSONObject problemObject) throws JSONException 
+	{
 		HashSet<Entry<Point2D.Double, Point2D.Double>> listGoal = new HashSet<>();
 
 		JSONArray list = problemObject.getJSONArray("goals");
@@ -84,13 +97,14 @@ public class RGraph extends SimpleGraph<Entry<Point2D, Boolean>, DefaultEdge> {
 
 	}
 
-	private Set<Line2D.Double> getShotLineOnTarget(JSONObject problemObject) throws JSONException {
-		Set<Line2D.Double> listShot = new HashSet<>();
+	private Set<Entry<Line2D.Double,Double>> getShotLineOnTarget(JSONObject problemObject) throws JSONException 
+	{
+		Set<Entry<Line2D.Double,Double>> listShot = new HashSet<>();
 		Set<Point2D.Double> listOpp = generateListOpp(problemObject);
 		Set<Entry<Point2D.Double, Point2D.Double>> listGoal = generateListGoal(problemObject);
 		double thetaStep = problemObject.getDouble("theta_step");
 		for (Point2D.Double opp : listOpp) {
-			Set<Double> listTheta = new HashSet<>();
+			//Set<Double> listTheta = new HashSet<>();
 			for (Entry<Point2D.Double, Point2D.Double> goal : listGoal) {
 				double theta1 = getAngle(opp, goal.getKey());
 				double theta2 = getAngle(opp, goal.getValue());
@@ -108,7 +122,7 @@ public class RGraph extends SimpleGraph<Entry<Point2D, Boolean>, DefaultEdge> {
 					if (thetaK < thetaMax && thetaK > thetaMin) {
 						Point2D.Double intersectionPoint = intersection(opp, thetaK, goal.getKey(), goal.getValue());
 						Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
-						listShot.add(shotLine);
+						listShot.add(new SimpleEntry<>(shotLine, thetaK));
 
 					}
 				}
@@ -120,7 +134,8 @@ public class RGraph extends SimpleGraph<Entry<Point2D, Boolean>, DefaultEdge> {
 
 	// intersection point between a line passing through p with an angle of
 	// theta, and a line passing through p1 and p2
-	private Point2D.Double intersection(Point2D.Double p, double theta, Point2D.Double p1, Point2D.Double p2) {
+	private Point2D.Double intersection(Point2D.Double p, double theta, Point2D.Double p1, Point2D.Double p2)
+	{
 
 		// we first compute the cartesian equation for each line, then we solve
 		// the system
@@ -149,7 +164,8 @@ public class RGraph extends SimpleGraph<Entry<Point2D, Boolean>, DefaultEdge> {
 
 	}
 
-	private double getAngle(Point2D.Double p1, Point2D.Double p2) {
+	private double getAngle(Point2D.Double p1, Point2D.Double p2) 
+	{
 		double theta = 0;
 		if (p1.getX() != p2.getX()) {
 			theta = Math.atan((p2.getY() - p1.getY()) / (p2.getX() - p2.getX())) % (2.0 * Math.PI);
@@ -169,7 +185,8 @@ public class RGraph extends SimpleGraph<Entry<Point2D, Boolean>, DefaultEdge> {
 		return theta;
 	}
 
-	private Set<Point2D.Double> generateListOpp(JSONObject problemObject) throws JSONException {
+	private Set<Point2D.Double> generateListOpp(JSONObject problemObject) throws JSONException 
+	{
 		HashSet<Point2D.Double> listOpp = new HashSet<>();
 
 		JSONArray list = problemObject.getJSONArray("opponents");
@@ -183,7 +200,8 @@ public class RGraph extends SimpleGraph<Entry<Point2D, Boolean>, DefaultEdge> {
 		return listOpp;
 	}
 
-	private Set<Point2D.Double> generateList(JSONObject problemObject, String fieldName) throws JSONException {
+	private Set<Point2D.Double> generateList(JSONObject problemObject, String fieldName) throws JSONException 
+	{
 
 		HashSet<Point2D.Double> listOpp = new HashSet<>();
 
@@ -216,7 +234,8 @@ public class RGraph extends SimpleGraph<Entry<Point2D, Boolean>, DefaultEdge> {
 		return result;
 	}
 
-	private Set<Point2D.Double> generatePointList(JSONObject problemObject) throws JSONException {
+	private Set<Point2D.Double> generatePointList(JSONObject problemObject) throws JSONException 
+	{
 		int precision = 100;
 		HashSet<Point2D.Double> listPoint = new HashSet<>();
 
