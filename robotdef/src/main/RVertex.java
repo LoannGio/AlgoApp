@@ -2,6 +2,8 @@ package main;
 
 import java.awt.geom.Point2D;
 
+import com.sun.xml.internal.bind.v2.runtime.RuntimeUtil.ToStringAdapter;
+
 
 //Class representing the vertices of the graph: characterized by a position (in the field), 
 //an angle if the vertex is a shotline vertex, and a bool that id true if the vertex is a
@@ -22,6 +24,7 @@ public class RVertex
 	{
 		this._position = _position;
 		this._goodGuy = _goodGuy;
+		this._theta = 0.0;
 	}
 
 
@@ -57,8 +60,23 @@ public class RVertex
 	{
 		this._theta = _theta;
 	}
-
 	
+	
+	
+	@Override
+	public String toString() {
+		String str = "";
+		if(_goodGuy)
+		{
+			str+="D:" + "[" + _position.getX() + "," + _position.getY() + "]";
+		}
+		else
+		{
+			str+="T:" + "[" + _position.getX() + "," + _position.getY() + "]" + "::"+_theta;
+		}
+		return str;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
