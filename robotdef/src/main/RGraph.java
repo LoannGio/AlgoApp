@@ -34,20 +34,31 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 
 		// generating the list of possible position
 		Set<Point2D.Double> listPoint = generatePointList(problemObject);
+		
+		System.out.println(listPoint.size());
 
 		// for each opponent, getting shot on target
 		Set<Entry<Line2D.Double,Double>> listShotLine = getShotLineOnTarget(problemObject);
+		System.out.println(listShotLine.size());
 
 
-		for (Entry<Line2D.Double,Double> l : listShotLine) {
+		for (Entry<Line2D.Double,Double> l : listShotLine) 
+		{
 			addVertex(new RVertex(l.getKey().getP1(),l.getValue(), false));
 		}
 		double robotRadius = getRobotRadius(problemObject);
 
-		for (Entry<Line2D.Double,Double> line : listShotLine) {
-			for (Point2D.Double pos : listPoint) {
+
+		for (Entry<Line2D.Double,Double> line : listShotLine) 
+		{
+			for (Point2D.Double pos : listPoint) 
+			{
+				//System.out.println("distance from line" + line.getKey().getP1() + "," + line.getKey().getP2() + " of point:" + pos.getX() + "," + pos.getY() + "=" + line.getKey().ptLineDist(pos));
+				
 				// there is a defense position
-				if (line.getKey().ptLineDist(pos) < robotRadius && pos.distance(line.getKey().getP1()) > 2.0 * robotRadius) {
+				if (line.getKey().ptSegDist(pos) < robotRadius && pos.distance(line.getKey().getP1()) > 2.0 * robotRadius) 
+				{
+					System.out.println("distance from line of point:" + pos.getX() + "," + pos.getY() + "=" + line.getKey().ptLineDist(pos));
 					addVertex(new RVertex(pos, true));
 					addEdge(new RVertex(line.getKey().getP1(),line.getValue(),false), new RVertex(pos, true));
 				}
@@ -64,6 +75,8 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 				}
 			}
 		}
+		
+		System.out.println(edgeSet().size());
 
 	}
 	
@@ -104,29 +117,61 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		Set<Point2D.Double> listOpp = generateListOpp(problemObject);
 		Set<Entry<Point2D.Double, Point2D.Double>> listGoal = generateListGoal(problemObject);
 		double thetaStep = problemObject.getDouble("theta_step");
-		for (Point2D.Double opp : listOpp) {
+		for (Point2D.Double opp : listOpp) 
+		{
 			//Set<Double> listTheta = new HashSet<>();
-			for (Entry<Point2D.Double, Point2D.Double> goal : listGoal) {
+			for (Entry<Point2D.Double, Point2D.Double> goal : listGoal) 
+			{
 				double theta1 = getAngle(opp, goal.getKey());
 				double theta2 = getAngle(opp, goal.getValue());
 				double thetaMin, thetaMax;
-				if (theta1 <= theta2) {
-					thetaMin = theta1;
-					thetaMax = theta2;
-				} else {
-					thetaMin = theta2;
-					thetaMax = theta2;
+				if(Math.abs(theta2-theta1) < Math.PI)
+				{
+					if (theta1 <= theta2) 
+					{
+						thetaMin = theta1;
+						thetaMax = theta2;
+					} 
+					else 
+					{
+						thetaMin = theta2;
+						thetaMax = theta1;
+					}
+					
 				}
+				else
+				{
+					if (theta1 <= theta2) 
+					{
+						thetaMin = theta2 - 2.0*Math.PI;
+						thetaMax = theta1;
+					} 
+					else 
+					{
+						thetaMin = theta1 - 2.0*Math.PI;
+						thetaMax = theta2;
+					}
+					
+				}
+				
+				
+				System.out.println(thetaMin + "," + thetaMax);
 
 				// check if the angle are good ones
-				for (double thetaK = 0; thetaK < 2.0 * Math.PI; thetaK += thetaStep) {
-					if (thetaK < thetaMax && thetaK > thetaMin) {
-						Point2D.Double intersectionPoint = intersection(opp, thetaK, goal.getKey(), goal.getValue());
-						Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
-						listShot.add(new SimpleEntry<>(shotLine, thetaK));
-
-					}
+				for (double thetaK = thetaMin; thetaK  < thetaMax; thetaK += thetaStep) 
+				{
+					
+					Point2D.Double intersectionPoint = intersection(opp, thetaK, goal.getKey(), goal.getValue());
+					Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
+					listShot.add(new SimpleEntry<>(shotLine, thetaK));
+					
 				}
+				for(Entry<Line2D.Double, Double> e : listShot)
+				{
+					System.out.println(e.getKey().getP1() + "," + e.getKey().getP2() + "::" + e.getValue());
+					
+				}
+				System.out.println();
 			}
 		}
 
@@ -142,19 +187,26 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		// the system
 		double a1, a2, b1, b2, c1, c2;
 
-		a1 = Math.sin(theta);
-		b1 = -1.0 * Math.cos(theta);
-		c1 = Math.cos(theta) * p.getY() - Math.sin(theta) * p.getX();
-
-		if (p1.getX() != p2.getX()) {
+		///TODO:need to check for theta=+-Pi/2
+		a1 = -1.0*Math.tan(theta);
+		b1 = 1;
+		c1 = a1*p.getX() + p.getY();
+		
+		
+		if (p1.getX() != p2.getX()) 
+		{
 			a2 = 1.0;
-			b2 = (p1.getY() - p2.getY()) / (p2.getX() - p1.getX());
+			b2 = -1.0*(p1.getY() - p2.getY()) / (p2.getX() - p1.getX());
 			c2 = -1.0 * p1.getY() - b2 * p1.getX();
-		} else {
-			a2 = 0.0;
-			b2 = 1.0;
+		} 
+		else 
+		{
+			a2 = 1.0;
+			b2 = 0.0;
 			c2 = -1.0 * p1.getX();
 		}
+		System.out.println(a1 + "," + b1 + "," + c1 + "::" + a2 + "," + b2 + "," + c2);
+		
 
 		double x = (b1 * c2 - c1 * b2) / (a1 * b2 - b1 * a2);
 		double y = (c1 * a2 - a1 * c2) / (a1 * b2 - b1 * a2);
@@ -168,17 +220,33 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 	private double getAngle(Point2D.Double p1, Point2D.Double p2) 
 	{
 		double theta = 0;
-		if (p1.getX() != p2.getX()) {
-			theta = Math.atan((p2.getY() - p1.getY()) / (p2.getX() - p2.getX())) % (2.0 * Math.PI);
-			if (p1.getX() > p2.getX()) {
+		if (p1.getX() != p2.getX()) 
+		{
+			theta = Math.atan((p2.getY() - p1.getY()) / (p2.getX() - p1.getX()));
+			theta = theta % (2.0 * Math.PI);
+			if(theta <0) 
+			{
+				theta += 2.0*Math.PI;
+			}
+			if (p1.getX() > p2.getX()) 
+			{
 				theta += Math.PI;
 				theta = theta % (2.0 * Math.PI);
+				if(theta <0) 
+				{
+					theta += 2.0*Math.PI;
+				}
 			}
-		} else {
-			if (p2.getY() > p1.getY()) {
+		} 
+		else 
+		{
+			if (p2.getY() > p1.getY()) 
+			{
 				return Math.PI / 2.0;
-			} else {
-				return -1.0 * Math.PI / 2.0;
+			} 
+			else 
+			{
+				return 3.0 * Math.PI / 2.0;
 			}
 
 		}
@@ -251,8 +319,8 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		yMax = arrayYLimit.getDouble(1);
 		double currentX, currentY;
 		currentX = xMin;
-		currentY = xMax;
-		while (currentY < xMax) {
+		currentY = yMin;
+		while (currentY < yMax) {
 			currentX = xMin;
 			while (currentX < xMax) {
 				double posX = (double) Math.round(currentX * precision) / precision;
