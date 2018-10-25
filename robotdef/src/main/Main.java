@@ -26,7 +26,7 @@ public class Main {
 		
 		//Test de smallestDominatingSet()
 		System.out.println("---Test de smallestDominatingSet()");
-		System.out.println(Domination.smallestDominatingSet(G,G.getShotLineVertices(), G.getPositionVertices()));
+		System.out.println(Domination.smallestDominatingSetBruteForce(G,G.getShotLineVertices(), G.getPositionVertices()));
 		System.out.println(G.getPositionVertices());
 	}
 }

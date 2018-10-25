@@ -54,7 +54,7 @@ public class DominationTest {
 		HashSet<Integer> truth = new HashSet<Integer>();
 		truth.add(0);
 		truth.add(2);
-		assertEquals(truth, Domination.smallestDominatingSet(g));
+		assertEquals(truth, Domination.smallestDominatingSetBruteForce(g));
 	}
 
 }
