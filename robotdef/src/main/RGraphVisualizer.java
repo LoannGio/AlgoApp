@@ -62,7 +62,7 @@ public class RGraphVisualizer extends JApplet {
 			int retValue = chooser.showOpenDialog(null);
 			if (retValue == JFileChooser.APPROVE_OPTION) {
 				filepath = chooser.getSelectedFile().getPath();
-				g = new DefaultListenableGraph<>(new RGraph("test.json", false));
+				g = new DefaultListenableGraph<>(new RGraph(filepath, false));
 			} else {
 				System.out.println("File not found");
 			}

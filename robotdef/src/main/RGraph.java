@@ -76,7 +76,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 			}
 		}
 		
-		System.out.println(edgeSet().size());
+		//System.out.println(edgeSet().size());
 
 	}
 	
@@ -155,7 +155,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 				}
 				
 				
-				System.out.println(thetaMin + "," + thetaMax);
+				//System.out.println(thetaMin + "," + thetaMax);
 
 				// check if the angle are good ones
 				for (double thetaK = thetaMin; thetaK  < thetaMax; thetaK += thetaStep) 
@@ -166,12 +166,12 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 					listShot.add(new SimpleEntry<>(shotLine, thetaK));
 					
 				}
-				for(Entry<Line2D.Double, Double> e : listShot)
+				/*for(Entry<Line2D.Double, Double> e : listShot)
 				{
 					System.out.println(e.getKey().getP1() + "," + e.getKey().getP2() + "::" + e.getValue());
 					
 				}
-				System.out.println();
+				System.out.println();*/
 			}
 		}
 
@@ -205,7 +205,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 			b2 = 0.0;
 			c2 = -1.0 * p1.getX();
 		}
-		System.out.println(a1 + "," + b1 + "," + c1 + "::" + a2 + "," + b2 + "," + c2);
+		//System.out.println(a1 + "," + b1 + "," + c1 + "::" + a2 + "," + b2 + "," + c2);
 		
 
 		double x = (b1 * c2 - c1 * b2) / (a1 * b2 - b1 * a2);
