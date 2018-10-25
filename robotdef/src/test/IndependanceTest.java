@@ -46,7 +46,7 @@ public class IndependanceTest {
 		D2.add(0);
 		D2.add(1);
 		b = Independance.isIndependent(g, D2);
-		// Test sur C5 avec D = {0, 1}
+		//Test sur C5 avec D = {0, 1}
 		assertEquals(b, false);
 
 	}

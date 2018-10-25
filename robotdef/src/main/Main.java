@@ -3,8 +3,6 @@ package main;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.jgrapht.graph.DefaultListenableGraph;
-import org.jgrapht.graph.SimpleGraph;
 import org.json.JSONException;
 
 public class Main {
@@ -21,12 +19,13 @@ public class Main {
 		} else {
 			System.out.println("File not found");
 		}
-		
+
 		RGraph G = new RGraph(filepath, false);
-		
-		//Test de smallestDominatingSet()
+
+		// Test de smallestDominatingSet()
 		System.out.println("---Test de smallestDominatingSet()");
-		System.out.println(Domination.smallestDominatingSet(G,G.getShotLineVertices(), G.getPositionVertices()));
+		System.out.println(Domination.smallestDominatingSet(G, G.getShotLineVertices(), G.getPositionVertices()));
 		System.out.println(G.getPositionVertices());
+		new RGraphVisualizer(G);
 	}
 }
