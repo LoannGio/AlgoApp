@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.sound.sampled.ReverbType;
+
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.json.JSONArray;
@@ -35,11 +37,9 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		// generating the list of possible position
 		Set<Point2D.Double> listPoint = generatePointList(problemObject);
 		
-		System.out.println(listPoint.size());
 
 		// for each opponent, getting shot on target
 		Set<Entry<Line2D.Double,Double>> listShotLine = getShotLineOnTarget(problemObject);
-		System.out.println(listShotLine.size());
 
 
 		for (Entry<Line2D.Double,Double> l : listShotLine) 
@@ -58,7 +58,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 				// there is a defense position
 				if (line.getKey().ptSegDist(pos) < robotRadius && pos.distance(line.getKey().getP1()) > 2.0 * robotRadius) 
 				{
-					System.out.println("distance from line of point:" + pos.getX() + "," + pos.getY() + "=" + line.getKey().ptLineDist(pos));
+
 					addVertex(new RVertex(pos, true));
 					addEdge(new RVertex(line.getKey().getP1(),line.getValue(),false), new RVertex(pos, true));
 				}
@@ -76,7 +76,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 			}
 		}
 		
-		System.out.println(edgeSet().size());
+		//System.out.println(edgeSet().size());
 
 	}
 	
@@ -155,7 +155,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 				}
 				
 				
-				System.out.println(thetaMin + "," + thetaMax);
+				//System.out.println(thetaMin + "," + thetaMax);
 
 				// check if the angle are good ones
 				for (double thetaK = thetaMin; thetaK  < thetaMax; thetaK += thetaStep) 
@@ -166,12 +166,12 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 					listShot.add(new SimpleEntry<>(shotLine, thetaK));
 					
 				}
-				for(Entry<Line2D.Double, Double> e : listShot)
+				/*for(Entry<Line2D.Double, Double> e : listShot)
 				{
 					System.out.println(e.getKey().getP1() + "," + e.getKey().getP2() + "::" + e.getValue());
 					
 				}
-				System.out.println();
+				System.out.println();*/
 			}
 		}
 
@@ -205,7 +205,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 			b2 = 0.0;
 			c2 = -1.0 * p1.getX();
 		}
-		System.out.println(a1 + "," + b1 + "," + c1 + "::" + a2 + "," + b2 + "," + c2);
+		//System.out.println(a1 + "," + b1 + "," + c1 + "::" + a2 + "," + b2 + "," + c2);
 		
 
 		double x = (b1 * c2 - c1 * b2) / (a1 * b2 - b1 * a2);
@@ -335,4 +335,36 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 
 		return listPoint;
 	}
+	
+	
+	public Set<RVertex> getPositionVertices()
+	{
+		HashSet<RVertex> listPositionVertices = new HashSet<>();
+		Set<RVertex> listVertices = vertexSet();
+		for(RVertex v : listVertices)
+		{
+			if(v.is_goodGuy())
+			{
+				listPositionVertices.add(v);
+			}
+		}
+		
+		return listPositionVertices;
+	}
+	
+	public Set<RVertex> getshotLineVertices()
+	{
+		HashSet<RVertex> listPositionVertices = new HashSet<>();
+		Set<RVertex> listVertices = vertexSet();
+		for(RVertex v : listVertices)
+		{
+			if(!v.is_goodGuy())
+			{
+				listPositionVertices.add(v);
+			}
+		}
+		
+		return listPositionVertices;
+	}
+	
 }
