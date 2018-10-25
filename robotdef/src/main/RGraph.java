@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.sound.sampled.ReverbType;
+
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.json.JSONArray;
@@ -35,11 +37,9 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		// generating the list of possible position
 		Set<Point2D.Double> listPoint = generatePointList(problemObject);
 		
-		System.out.println(listPoint.size());
 
 		// for each opponent, getting shot on target
 		Set<Entry<Line2D.Double,Double>> listShotLine = getShotLineOnTarget(problemObject);
-		System.out.println(listShotLine.size());
 
 
 		for (Entry<Line2D.Double,Double> l : listShotLine) 
@@ -58,7 +58,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 				// there is a defense position
 				if (line.getKey().ptSegDist(pos) < robotRadius && pos.distance(line.getKey().getP1()) > 2.0 * robotRadius) 
 				{
-					System.out.println("distance from line of point:" + pos.getX() + "," + pos.getY() + "=" + line.getKey().ptLineDist(pos));
+
 					addVertex(new RVertex(pos, true));
 					addEdge(new RVertex(line.getKey().getP1(),line.getValue(),false), new RVertex(pos, true));
 				}
@@ -335,4 +335,36 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 
 		return listPoint;
 	}
+	
+	
+	public Set<RVertex> getPositionVertices()
+	{
+		HashSet<RVertex> listPositionVertices = new HashSet<>();
+		Set<RVertex> listVertices = vertexSet();
+		for(RVertex v : listVertices)
+		{
+			if(v.is_goodGuy())
+			{
+				listPositionVertices.add(v);
+			}
+		}
+		
+		return listPositionVertices;
+	}
+	
+	public Set<RVertex> getshotLineVertices()
+	{
+		HashSet<RVertex> listPositionVertices = new HashSet<>();
+		Set<RVertex> listVertices = vertexSet();
+		for(RVertex v : listVertices)
+		{
+			if(!v.is_goodGuy())
+			{
+				listPositionVertices.add(v);
+			}
+		}
+		
+		return listPositionVertices;
+	}
+	
 }

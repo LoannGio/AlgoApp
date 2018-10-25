@@ -112,6 +112,12 @@ public class RGraphVisualizer extends JApplet {
 						scale * (pY + yOffset + distToCenter * Math.sin(theta)));
 			}
 		}
+		
+		HashMap<DefaultEdge, mxICell> tableEdges = jgxAdapter.getEdgeToCellMap();
+		for(Entry<DefaultEdge,mxICell> e : tableEdges.entrySet())
+		{
+			e.getValue().setId("");
+		}
 
 		layout.execute(jgxAdapter.getDefaultParent());
 		// that's all there is to it!...
