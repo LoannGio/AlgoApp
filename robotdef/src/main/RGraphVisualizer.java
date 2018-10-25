@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import javax.swing.JApplet;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -18,7 +19,7 @@ import com.mxgraph.layout.orthogonal.mxOrthogonalLayout;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphComponent;
 
-public class RGraphVisualizer extends JFrame {
+public class RGraphVisualizer extends JApplet {
 
 	private static final long serialVersionUID = 2202072534703043194L;
 
@@ -47,6 +48,7 @@ public class RGraphVisualizer extends JFrame {
 		frame.setVisible(true);
 	}
 
+	@Override
 	public void init() {
 		// create a JGraphT graph
 		ListenableGraph<RVertex, DefaultEdge> g = null;
@@ -60,7 +62,7 @@ public class RGraphVisualizer extends JFrame {
 			int retValue = chooser.showOpenDialog(null);
 			if (retValue == JFileChooser.APPROVE_OPTION) {
 				filepath = chooser.getSelectedFile().getPath();
-				g = new DefaultListenableGraph<>(new RGraph(filepath, false));
+				g = new DefaultListenableGraph<>(new RGraph("test.json", false));
 			} else {
 				System.out.println("File not found");
 			}
