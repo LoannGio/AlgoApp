@@ -1,11 +1,14 @@
 package main;
 
+import java.util.Set;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jgrapht.graph.DefaultListenableGraph;
 import org.jgrapht.graph.SimpleGraph;
 import org.json.JSONException;
+
 
 public class Main {
 	public static void main(String[] args) throws JSONException {
@@ -26,7 +29,9 @@ public class Main {
 		
 		//Test de smallestDominatingSet()
 		System.out.println("---Test de smallestDominatingSet()");
-		System.out.println(Domination.smallestDominatingSet(G,G.getShotLineVertices(), G.getPositionVertices()));
+		Set<RVertex> solution = (Set<RVertex>) Domination.smallestDominatingSet(G,G.getShotLineVertices(), G.getPositionVertices());
+		JSonSolution.saveJSonSolution(solution);
+		System.out.println(solution);
 		System.out.println(G.getPositionVertices());
 	}
 }
