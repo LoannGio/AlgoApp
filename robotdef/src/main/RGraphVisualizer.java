@@ -5,15 +5,12 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import javax.swing.JApplet;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultListenableGraph;
-import org.json.JSONException;
 
 import com.mxgraph.layout.orthogonal.mxOrthogonalLayout;
 import com.mxgraph.model.mxICell;
@@ -27,50 +24,30 @@ public class RGraphVisualizer extends JApplet {
 
 	private JGraphXAdapter<RVertex, DefaultEdge> jgxAdapter;
 
-	/**
-	 * An alternative starting point for this demo, to also allow running this
-	 * applet as an application.
-	 *
-	 * @param args
-	 *            command line arguments
-	 * @throws JSONException
-	 */
-	public static void main(String[] args) throws JSONException {
-		RGraphVisualizer applet = new RGraphVisualizer();
+	private RGraph G;
 
-		applet.init();
-
+	public RGraphVisualizer(RGraph g) {
 		JFrame frame = new JFrame();
-		frame.getContentPane().add(applet);
+		frame.getContentPane().add(this);
 		frame.setTitle("JGraphT Adapter to JGraphX Demo");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setPreferredSize(new Dimension(1200, 760));
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		G = g;
+
+		this.init();
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
 	}
 
 	@Override
 	public void init() {
 		// create a JGraphT graph
 		ListenableGraph<RVertex, DefaultEdge> g = null;
-		String filepath = "";
-		try {
-			JFileChooser chooser = new JFileChooser();
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON files (*.json)", "json");
-
-			chooser.setFileFilter(filter);
-
-			int retValue = chooser.showOpenDialog(null);
-			if (retValue == JFileChooser.APPROVE_OPTION) {
-				filepath = chooser.getSelectedFile().getPath();
-				g = new DefaultListenableGraph<>(new RGraph(filepath, false));
-			} else {
-				System.out.println("File not found");
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		g = new DefaultListenableGraph<>(G, false);
 		// create a visualization using JGraph, via an adapter
 		jgxAdapter = new JGraphXAdapter<>(g);
 
@@ -112,10 +89,9 @@ public class RGraphVisualizer extends JApplet {
 						scale * (pY + yOffset + distToCenter * Math.sin(theta)));
 			}
 		}
-		
+
 		HashMap<DefaultEdge, mxICell> tableEdges = jgxAdapter.getEdgeToCellMap();
-		for(Entry<DefaultEdge,mxICell> e : tableEdges.entrySet())
-		{
+		for (Entry<DefaultEdge, mxICell> e : tableEdges.entrySet()) {
 			e.getValue().setId("");
 		}
 
