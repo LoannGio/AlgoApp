@@ -47,7 +47,7 @@ public class Domination {
 
 		System.out.println(SubsetCreator.allSubsetsOfSizeN(D3, 2));
 		
-		//Test de dominationNumber()
+		//Test de smallestDominatingSet()
 		System.out.println("---Test de smallestDominatingSet() sur C5---");
 		System.out.println(smallestDominatingSet(g));
 	}
@@ -108,6 +108,18 @@ public class Domination {
 		for (int i = 0; i <= 6; i++) {
 			for(Set<V> D : SubsetCreator.allSubsetsOfSizeN(G.vertexSet(), i))
 				if(dominates(G, D, d)) {
+					return D;
+				}
+		}
+		return null;
+	}
+	
+	/*Retourne un plus petit ensemble qui domine un sous-ensemble de sommets dominated d'un graphe 
+	(null si son cardinal est > 6) par un ensemble de sommets dans dominating*/
+	public static <V, E> Set<V> smallestDominatingSet(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating) {
+		for (int i = 0; i <= 6; i++) {
+			for(Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i))
+				if(dominates(G, D, dominated)) {
 					return D;
 				}
 		}

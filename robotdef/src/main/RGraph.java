@@ -352,7 +352,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		return listPositionVertices;
 	}
 	
-	public Set<RVertex> getshotLineVertices()
+	public Set<RVertex> getShotLineVertices()
 	{
 		HashSet<RVertex> listPositionVertices = new HashSet<>();
 		Set<RVertex> listVertices = vertexSet();
