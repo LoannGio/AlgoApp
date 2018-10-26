@@ -37,7 +37,7 @@ public class JSonSolution
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		System.out.println("Solution saved.");
 		
 	}
 	

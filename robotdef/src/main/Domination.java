@@ -82,4 +82,9 @@ public class Domination {
 		}
 		return null;
 	}
+	
+	public static <V, E> Set<V> smallestDominatingSetGluttonous(SimpleGraph<V, E> G) {
+		return null;
+	}
+	
 }
