@@ -119,6 +119,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		double thetaStep = problemObject.getDouble("theta_step");
 		for (Point2D.Double opp : listOpp) 
 		{
+			System.out.println("checking opp:" + opp.getX() + "," + opp.getY());
 			//Set<Double> listTheta = new HashSet<>();
 			for (Entry<Point2D.Double, Point2D.Double> goal : listGoal) 
 			{
@@ -154,18 +155,22 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 					
 				}
 				
+				System.out.println(thetaMin + "::" + thetaMax);
+				
 				
 				//System.out.println(thetaMin + "," + thetaMax);
 
 				// check if the angle are good ones
+				int i=0;
 				for (double thetaK = thetaMin; thetaK  < thetaMax; thetaK += thetaStep) 
 				{
 					
 					Point2D.Double intersectionPoint = intersection(opp, thetaK, goal.getKey(), goal.getValue());
 					Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
 					listShot.add(new SimpleEntry<>(shotLine, thetaK));
-					
+					i++;
 				}
+				System.out.println(i);
 				/*for(Entry<Line2D.Double, Double> e : listShot)
 				{
 					System.out.println(e.getKey().getP1() + "," + e.getKey().getP2() + "::" + e.getValue());
@@ -260,16 +265,20 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 
 		JSONArray list = problemObject.getJSONArray("opponents");
 
-		for (int i = 0; i < list.length(); i++) {
+		for (int i = 0; i < list.length(); i++) 
+		{
 			JSONArray pair = list.getJSONArray(i);
+			
 
 			listOpp.add(new Point2D.Double(pair.getDouble(0), pair.getDouble(1)));
 
 		}
+		
+		System.out.println("nb d'opponent:" + listOpp.size());
 		return listOpp;
 	}
 
-	private Set<Point2D.Double> generateList(JSONObject problemObject, String fieldName) throws JSONException 
+	/*private Set<Point2D.Double> generateList(JSONObject problemObject, String fieldName) throws JSONException 
 	{
 
 		HashSet<Point2D.Double> listOpp = new HashSet<>();
@@ -284,7 +293,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		}
 		return listOpp;
 
-	}
+	}*/
 
 	public static String readFile(String filename) {
 		String result = "";
