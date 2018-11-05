@@ -9,28 +9,6 @@ import java.util.Vector;
 
 public class SubsetCreator<V> {
 
-	private static <V> HashSet<HashSet<V>> recurs_allSubsetOfSizeN(int start, int end, int k,
-			HashSet<HashSet<V>> subsets, ArrayList<V> vertices) {
-		for (int i = start; i < end; i++) {
-			HashSet<HashSet<V>> tmp = new HashSet<HashSet<V>>();
-			tmp = recurs_allSubsetOfSizeN(i + 1, end, k, subsets, vertices);
-			for (HashSet<V> v : tmp) {
-				HashSet<V> tmp2 = new HashSet<V>();
-				tmp2.add(vertices.get(i));
-				for (V v2 : v) {
-					tmp2.add(v2);
-					if (tmp2.size() == k) {
-						subsets.add(tmp2);
-						tmp2 = new HashSet<V>();
-						tmp2.add(vertices.get(i));
-					}
-				}
-				System.out.println(tmp2);
-			}
-		}
-		return subsets;
-	}
-
 	// Returns a list of subsets of size n from the set S
 	public static <V> HashSet<HashSet<V>> allSubsetsOfSizeN(Set<V> S, int k) {
 		// Converting Set -> List
@@ -38,21 +16,24 @@ public class SubsetCreator<V> {
 		for (V v : S) {
 			vertices.add(v);
 		}
-
-		// subsets = output (list of S's subsets of size n)
-
-		// recurs_allSubsetOfSizeN(0, verti!ces.size() - 1, k, subsets,
-		// vertices);
 		HashSet<HashSet<V>> subsets = new HashSet<HashSet<V>>();
-		HashSet<V> subset = new HashSet<V>();
+		List<List<V>> result = subsets(vertices, k, vertices.get(0));
 
-		// System.out.println(subsets);
+		HashSet<V> tmp;
+		for (List<V> list : result) {
+			tmp = new HashSet<V>();
+			for (V v : list) {
+				tmp.add(v);
+			}
+			subsets.add(new HashSet(tmp));
+		}
+
 		return subsets;
 	}
 
 	// getting the set of all subset of size k composed with elements of
 	// original set
-	public static <V> List<List<V>> subsets(List<V> set, int k, V start) {
+	private static <V> List<List<V>> subsets(List<V> set, int k, V start) {
 		// System.out.println("set of size:" + k + ":: from : " + start);
 		// set of size :k, composed of element of :set, starting at element
 		// :start.
@@ -75,6 +56,7 @@ public class SubsetCreator<V> {
 		// nice but
 		// didn't find out how to do it a better way: this is the reason for
 		// using List Interface)
+		// TODO Loann : check avec jonathan
 		it.previous();
 		while (it.hasNext()) {
 			v = it.next();
@@ -95,12 +77,22 @@ public class SubsetCreator<V> {
 		return subsets;
 	}
 
-	/*
-	 * public static void main(String[] args) { List<Integer> testSet = new
-	 * Vector<>(); for(int i =0;i<11; i++) { testSet.add(i); }
-	 * 
-	 * System.out.println(testSet); List<List<Integer>> subsetsSizeK =
-	 * subset(testSet, 3, 0); System.out.println("size:" + subsetsSizeK.size());
-	 * System.out.println(subsetsSizeK); }
-	 */
+	public static void main(String[] args) {
+		List<Integer> testSet = new Vector<>();
+		for (int i = 0; i < 11; i++) {
+			testSet.add(i);
+		}
+
+		System.out.println(testSet);
+		List<List<Integer>> subsetsSizeK = subsets(testSet, 3, 0);
+		System.out.println("size:" + subsetsSizeK.size());
+		System.out.println(subsetsSizeK);
+		System.out.println("------------");
+		HashSet D3 = new HashSet<Integer>();
+		for (int i = 0; i < 5; i++) {
+			D3.add(i);
+		}
+		System.out.println(SubsetCreator.allSubsetsOfSizeN(D3, 2).toString());
+	}
+
 }

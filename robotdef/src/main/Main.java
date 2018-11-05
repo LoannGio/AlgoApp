@@ -20,7 +20,11 @@ public class Main {
 			filepath = chooser.getSelectedFile().getPath();
 		} else {
 			System.out.println("File not found");
+			return; // ou throw new FileNotFoundException(), mais de toute facon
+					// si il n y a
+					// pas de fichier on execute pas...
 		}
+		System.out.println("toto");
 
 		RGraph G = new RGraph(filepath, false);
 
