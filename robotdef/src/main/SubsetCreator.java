@@ -76,23 +76,4 @@ public class SubsetCreator<V> {
 		}
 		return subsets;
 	}
-
-	public static void main(String[] args) {
-		List<Integer> testSet = new Vector<>();
-		for (int i = 0; i < 11; i++) {
-			testSet.add(i);
-		}
-
-		System.out.println(testSet);
-		List<List<Integer>> subsetsSizeK = subsets(testSet, 3, 0);
-		System.out.println("size:" + subsetsSizeK.size());
-		System.out.println(subsetsSizeK);
-		System.out.println("------------");
-		HashSet D3 = new HashSet<Integer>();
-		for (int i = 0; i < 5; i++) {
-			D3.add(i);
-		}
-		System.out.println(SubsetCreator.allSubsetsOfSizeN(D3, 2).toString());
-	}
-
 }
