@@ -40,6 +40,11 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 
 		// for each opponent, getting shot on target
 		Set<Entry<Line2D.Double,Double>> listShotLine = getShotLineOnTarget(problemObject);
+		
+		for(Entry<Line2D.Double,Double> e : listShotLine)
+		{
+			System.out.println(e.getKey().getP1() + ":::" + e.getKey().getP2());
+		}
 
 
 		for (Entry<Line2D.Double,Double> l : listShotLine) 
@@ -77,6 +82,11 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		}
 		
 		//System.out.println(edgeSet().size());
+		/*Set<RVertex> listShotLines = getShotLineVertices();
+		for(RVertex v : listShotLines)
+		{
+
+		}*/
 
 	}
 	
@@ -155,7 +165,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 				}
 				
 				
-				//System.out.println(thetaMin + "," + thetaMax);
+				System.out.println(opp + "::" + thetaMin + "," + thetaMax);
 
 				// check if the angle are good ones
 				for (double thetaK = thetaMin; thetaK  < thetaMax; thetaK += thetaStep) 
@@ -188,11 +198,12 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		double a1, a2, b1, b2, c1, c2;
 
 		///TODO:need to check for theta=+-Pi/2
+		//shotline equation
 		a1 = -1.0*Math.tan(theta);
 		b1 = 1;
-		c1 = a1*p.getX() + p.getY();
+		c1 = -1.0*a1*p.getX() - p.getY();
 		
-		
+		//goal line equation
 		if (p1.getX() != p2.getX()) 
 		{
 			a2 = 1.0;
@@ -205,7 +216,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 			b2 = 0.0;
 			c2 = -1.0 * p1.getX();
 		}
-		//System.out.println(a1 + "," + b1 + "," + c1 + "::" + a2 + "," + b2 + "," + c2);
+		System.out.println(p + "(" + theta + ")"  + "::" + a1 + "," + b1 + "," + c1 + "::" + a2 + "," + b2 + "," + c2);
 		
 
 		double x = (b1 * c2 - c1 * b2) / (a1 * b2 - b1 * a2);
