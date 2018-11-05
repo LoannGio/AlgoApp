@@ -2,52 +2,48 @@ package main;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-public class SubsetCreator {
+public class SubsetCreator<V> {
 
-	/*
-	 * Source : Print all subsets of given size of a set
-	 * https://www.geeksforgeeks.org/print-subsets-given-size-set/
-	 */
-	static <V> void recurs_subsetsOfSizeR(ArrayList<V> vertexes, int numberOfVertexes, int n, int index,
-			ArrayList<V> subset, int i, ArrayList<Set<V>> subsets) {
-		if (index == n) {
-			subsets.add(new HashSet(subset));
-			return;
+	private static <V> HashSet<HashSet<V>> recurs_allSubsetOfSizeN(int start, int end, int k,
+			HashSet<HashSet<V>> subsets, ArrayList<V> vertices) {
+		for (int i = start; i < end; i++) {
+			HashSet<HashSet<V>> tmp = new HashSet<HashSet<V>>();
+			tmp = recurs_allSubsetOfSizeN(i + 1, end, k, subsets, vertices);
+			for (HashSet<V> v : tmp) {
+				HashSet<V> tmp2 = new HashSet<V>();
+				tmp2.add(vertices.get(i));
+				for (V v2 : v) {
+					tmp2.add(v2);
+					if (tmp2.size() == k) {
+						subsets.add(tmp2);
+						tmp2 = new HashSet<V>();
+						tmp2.add(vertices.get(i));
+					}
+				}
+				System.out.println(tmp2);
+			}
 		}
-
-		if (i >= numberOfVertexes)
-			return;
-
-		subset.set(index, vertexes.get(i));
-		recurs_subsetsOfSizeR(vertexes, numberOfVertexes, n, index + 1, subset, i + 1, subsets);
-		recurs_subsetsOfSizeR(vertexes, numberOfVertexes, n, index, subset, i + 1, subsets);
+		return subsets;
 	}
 
 	// Returns a list of subsets of size n from the set S
-	public static <V> List<Set<V>> allSubsetsOfSizeN(Set<V> S, int n) {
+	public static <V> HashSet<HashSet<V>> allSubsetsOfSizeN(Set<V> S, int k) {
 		// Converting Set -> List
-		ArrayList<V> vertexes = new ArrayList<V>();
+		ArrayList<V> vertices = new ArrayList<V>();
 		for (V v : S) {
-			vertexes.add(v);
+			vertices.add(v);
 		}
 
 		// subsets = output (list of S's subsets of size n)
-		ArrayList<Set<V>> subsets = new ArrayList<Set<V>>();
 
-		// Tmp list of vertexes. Represents 1 subset
-		ArrayList<V> subset = new ArrayList<V>();
-		/*
-		 * subset is modified threw "set" method thus its momery needs to be
-		 * allocated before. We would like to use a simple array here but as "V"
-		 * is not a type, we can't
-		 */
-		for (int i = 0; i < n; i++) {
-			subset.add(null);
-		}
-		recurs_subsetsOfSizeR(vertexes, vertexes.size(), n, 0, subset, 0, subsets);
+		// recurs_allSubsetOfSizeN(0, verti!ces.size() - 1, k, subsets,
+		// vertices);
+		HashSet<HashSet<V>> subsets = new HashSet<HashSet<V>>();
+		HashSet<V> subset = new HashSet<V>();
+
+		// System.out.println(subsets);
 		return subsets;
 	}
 }
