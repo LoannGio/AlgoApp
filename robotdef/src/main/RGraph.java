@@ -123,7 +123,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 
 	}
 
-	private Set<Entry<Line2D.Double,Double>> getShotLineOnTargetOld(JSONObject problemObject) throws JSONException 
+	private Set<Entry<Line2D.Double,Double>> getShotLineOnTarget(JSONObject problemObject) throws JSONException 
 	{
 		Set<Entry<Line2D.Double,Double>> listShot = new HashSet<>();
 		Set<Point2D.Double> listOpp = generateListOpp(problemObject);
@@ -203,7 +203,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 	}
 	
 	
-	private Set<Entry<Line2D.Double,Double>> getShotLineOnTarget(JSONObject problemObject) throws JSONException 
+	private Set<Entry<Line2D.Double,Double>> getShotLineOnTargetTest(JSONObject problemObject) throws JSONException 
 	{
 		Set<Entry<Line2D.Double,Double>> listShot = new HashSet<>();
 		Set<Point2D.Double> listOpp = generateListOpp(problemObject);
