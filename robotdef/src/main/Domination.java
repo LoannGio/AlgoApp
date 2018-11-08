@@ -67,11 +67,12 @@ public class Domination {
 		for (int i = 0; i <= 6; i++) {
 			for(Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i)) {
 				if(collisions) {
-					if(!Independance.isIndependent(G, dominating))
+					if(!Independance.isIndependent(G, dominating) && dominates(G, dominated, D))
 						continue;
 				}
-				if(dominates(G, D, dominated)) {
-					return D;
+				else {
+					if (dominates(G, dominated, D))
+						return D;
 				}
 			}
 		}
