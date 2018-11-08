@@ -5,7 +5,9 @@ import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -129,12 +131,14 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		double thetaStep = problemObject.getDouble("theta_step");
 		for (Point2D.Double opp : listOpp) 
 		{
+			
 			//Set<Double> listTheta = new HashSet<>();
 			for (Entry<Point2D.Double, Point2D.Double> goal : listGoal) 
 			{
 				double theta1 = getAngle(opp, goal.getKey());
 				double theta2 = getAngle(opp, goal.getValue());
 				double thetaMin, thetaMax;
+				//make the angle 
 				if(Math.abs(theta2-theta1) < Math.PI)
 				{
 					if (theta1 <= theta2) 
@@ -165,7 +169,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 				}
 				
 				
-				System.out.println(opp + "::" + thetaMin + "," + thetaMax);
+				//System.out.println(opp + "::" + thetaMin + "," + thetaMax);
 
 				// check if the angle are good ones
 				for (double thetaK = thetaMin; thetaK  < thetaMax; thetaK += thetaStep) 
@@ -176,6 +180,13 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 					listShot.add(new SimpleEntry<>(shotLine, thetaK));
 					
 				}
+			
+				/*for(double thetaK = -1.0*Math.PI;thetaK < Math.PI;thetaK += thetaStep )
+				{
+					Point2D.Double intersectionPoint = intersection(opp, thetaK, goal.getKey(), goal.getValue());
+					Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
+					listShot.add(new SimpleEntry<>(shotLine, thetaK));
+				}*/
 				/*for(Entry<Line2D.Double, Double> e : listShot)
 				{
 					System.out.println(e.getKey().getP1() + "," + e.getKey().getP2() + "::" + e.getValue());
@@ -183,6 +194,81 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 				}
 				System.out.println();*/
 			}
+		}
+
+		return listShot;
+	}
+	
+	
+	private Set<Entry<Line2D.Double,Double>> getShotLineOnTargetTest(JSONObject problemObject) throws JSONException 
+	{
+		Set<Entry<Line2D.Double,Double>> listShot = new HashSet<>();
+		Set<Point2D.Double> listOpp = generateListOpp(problemObject);
+		Set<Entry<Point2D.Double, Point2D.Double>> listGoal = generateListGoal(problemObject);
+		double thetaStep = problemObject.getDouble("theta_step");
+		
+		
+		for (Point2D.Double opp : listOpp) 
+		{	
+			//Set<Entry<Double,Double>> listThetaMinMax = new HashSet<>();
+			Map<Entry<Point2D.Double,Point2D.Double>,Entry<Double,Double>> listThetaMinMax = new HashMap<>();
+			//Set<Double> listTheta = new HashSet<>();
+			for (Entry<Point2D.Double, Point2D.Double> goal : listGoal) 
+			{
+				
+				double theta1 = getAngle(opp, goal.getKey());
+				double theta2 = getAngle(opp, goal.getValue());
+				double thetaMin, thetaMax;
+				//make the angle 
+				if(Math.abs(theta2-theta1) < Math.PI)
+				{
+					if (theta1 <= theta2) 
+					{
+						thetaMin = theta1;
+						thetaMax = theta2;
+					} 
+					else 
+					{
+						thetaMin = theta2;
+						thetaMax = theta1;
+					}
+					
+				}
+				else
+				{
+					if (theta1 <= theta2) 
+					{
+						thetaMin = theta2 - 2.0*Math.PI;
+						thetaMax = theta1;
+					} 
+					else 
+					{
+						thetaMin = theta1 - 2.0*Math.PI;
+						thetaMax = theta2;
+					}
+					
+				}
+				listThetaMinMax.put(new SimpleEntry<>(goal.getKey(), goal.getValue()), new SimpleEntry<>(thetaMin, thetaMax));
+			}
+			
+			for(double thetaK = -1.0*Math.PI;thetaK < Math.PI;thetaK += thetaStep )
+			{
+				for(Entry<Entry<Point2D.Double,Point2D.Double>,Entry<Double,Double>> goalAngle : listThetaMinMax.entrySet())
+				{
+					double thetaMin,thetaMax;
+					thetaMin = goalAngle.getValue().getKey();
+					thetaMax = goalAngle.getValue().getValue();
+					if(thetaK>= thetaMin && thetaK<= thetaMax)
+					{
+						Point2D.Double intersectionPoint = intersection(opp, thetaK, goalAngle.getKey().getKey(), goalAngle.getKey().getValue());
+						Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
+						listShot.add(new SimpleEntry<>(shotLine, thetaK));
+					}
+			
+				}
+
+			}
+			
 		}
 
 		return listShot;
