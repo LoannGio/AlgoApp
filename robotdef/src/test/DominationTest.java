@@ -17,7 +17,7 @@ public class DominationTest {
 	private SimpleGraph<Integer, DefaultEdge> c5;
 	//Un cycle de longueur 6
 	private SimpleGraph<Integer, DefaultEdge> c7;
-	//Un graphe complet à 6 sommets
+	//Un graphe complet ï¿½ 6 sommets
 	private SimpleGraph<Integer, DefaultEdge> k6;
 
 	@Before
@@ -71,7 +71,7 @@ public class DominationTest {
 	}
 
 	@Test
-	public void test_smallestDominatingSet() {
+	public void test_smallestDominatingSetBruteForce() {
 		// Test de smallestDominatingSet() sur C5
 		assertEquals(2, Domination.smallestDominatingSetBruteForce(c5).size());
 		
@@ -80,6 +80,18 @@ public class DominationTest {
 		
 		// Test de smallestDominatingSet() sur K6
 		assertEquals(1, Domination.smallestDominatingSetBruteForce(k6).size());
+	}
+	
+	@Test
+	public void test_dominatingSetGluttonous() {
+		// Test de smallestDominatingSet() sur C5
+		assertEquals(true, Domination.dominates(c5, Domination.dominatingSetGluttonous(c5)) );
+		
+		// Test de smallestDominatingSet() sur C7
+		assertEquals(true, Domination.dominates(c7, Domination.dominatingSetGluttonous(c7)) );
+		
+		// Test de smallestDominatingSet() sur K6
+		assertEquals(true, Domination.dominates(k6, Domination.dominatingSetGluttonous(k6)) );
 	}
 
 }
