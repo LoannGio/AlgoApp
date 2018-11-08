@@ -8,7 +8,7 @@ import org.jgrapht.Graphs;
 import org.jgrapht.graph.SimpleGraph;
 
 public class Domination {
-	// Vérifie si un ensemble de sommets D domine le graphe G
+	// Vï¿½rifie si un ensemble de sommets D domine le graphe G
 	public static <V, E> boolean dominates(SimpleGraph<V, E> G, Set<V> D) {
 		for (V v : G.vertexSet()) {
 			if (D.contains(v))
@@ -28,8 +28,7 @@ public class Domination {
 		return true;
 	}
 
-	/* Vérifie si un ensemble de sommets dominated domine un 
-	 * sous ensemble de sommets dominating dans G*/
+	/* Vï¿½rifie si un ensemble de sommets dominated domine un */
 	public static <V, E> boolean dominates(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating) {
 		for (V v : dominated) {
 			if (dominating.contains(v))
@@ -80,7 +79,7 @@ public class Domination {
 	
 	/* Retourne un ensemble dominant du graphe G qui domine un sous-ensemble 
 	 * de sommets dominated d'un graphe par un ensemble de sommets dans 
-	 * dominating (null si la méthode gloutonne ne trouve pas de sous-ensemble
+	 * dominating (null si la mï¿½thode gloutonne ne trouve pas de sous-ensemble
 	 *  de taille <= 6 */
 	public static <V, E> Set<V> dominatingSetGreedy(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating) {
 		Set<V> dominatedCopy = new HashSet<V>(dominated);
@@ -106,14 +105,14 @@ public class Domination {
 	}
 	
 	/* Retourne un ensemble dominant du graphe G qui domine un sous-ensemble 
-	 * de sommets dominated d'un graphe (null si la méthode gloutonne ne trouve
+	 * de sommets dominated d'un graphe (null si la mï¿½thode gloutonne ne trouve
 	 *  pas de sous-ensemble de taille <= 6 */
 	public static <V, E> Set<V> dominatingSetGreedy(SimpleGraph<V, E> G, Set<V> dominated) {
 		return dominatingSetGreedy(G, dominated, G.vertexSet());
 	}
 	
 	/*Retourne un ensemble dominant du graphe G
-	 * (null si la méthode gloutonne ne trouve pas de 
+	 * (null si la mï¿½thode gloutonne ne trouve pas de 
 	 * sous-ensemble de taille <= 6 */
 	public static <V, E> Set<V> dominatingSetGreedy(SimpleGraph<V, E> G) {
 		return dominatingSetGreedy(G, G.vertexSet());

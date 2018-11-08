@@ -17,7 +17,7 @@ public class DominationTest {
 	private SimpleGraph<Integer, DefaultEdge> c5;
 	//Un cycle de longueur 6
 	private SimpleGraph<Integer, DefaultEdge> c7;
-	//Un graphe complet à 6 sommets
+	//Un graphe complet ï¿½ 6 sommets
 	private SimpleGraph<Integer, DefaultEdge> k6;
 
 	@Before
