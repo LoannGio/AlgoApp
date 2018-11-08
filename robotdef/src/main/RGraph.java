@@ -132,9 +132,6 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		for (Point2D.Double opp : listOpp) 
 		{
 			
-			
-			
-			
 			//Set<Double> listTheta = new HashSet<>();
 			for (Entry<Point2D.Double, Point2D.Double> goal : listGoal) 
 			{
@@ -175,21 +172,21 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 				//System.out.println(opp + "::" + thetaMin + "," + thetaMax);
 
 				// check if the angle are good ones
-				/*for (double thetaK = thetaMin; thetaK  < thetaMax; thetaK += thetaStep) 
+				for (double thetaK = thetaMin; thetaK  < thetaMax; thetaK += thetaStep) 
 				{
 					
 					Point2D.Double intersectionPoint = intersection(opp, thetaK, goal.getKey(), goal.getValue());
 					Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
 					listShot.add(new SimpleEntry<>(shotLine, thetaK));
 					
-				}*/
-				
-				for(double thetaK = -1.0*Math.PI;thetaK < Math.PI;thetaK += thetaStep )
-				{
-					Point2D.Double intersectionPoint = intersection(opp, thetaK, goal.getKey(), goal.getValue());
-					Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
-					listShot.add(new SimpleEntry<>(shotLine, thetaK));
 				}
+			
+				/*for(double thetaK = -1.0*Math.PI;thetaK < Math.PI;thetaK += thetaStep )
+				{
+					Point2D.Double intersectionPoint = intersection(opp, thetaK, goal.getKey(), goal.getValue());
+					Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
+					listShot.add(new SimpleEntry<>(shotLine, thetaK));
+				}*/
 				/*for(Entry<Line2D.Double, Double> e : listShot)
 				{
 					System.out.println(e.getKey().getP1() + "," + e.getKey().getP2() + "::" + e.getValue());
