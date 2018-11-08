@@ -83,15 +83,15 @@ public class DominationTest {
 	}
 	
 	@Test
-	public void test_dominatingSetGluttonous() {
+	public void test_dominatingSetGreedy() {
 		// Test de smallestDominatingSet() sur C5
-		assertEquals(true, Domination.dominates(c5, Domination.dominatingSetGluttonous(c5)) );
+		assertEquals(true, Domination.dominates(c5, Domination.dominatingSetGreedy(c5)) );
 		
 		// Test de smallestDominatingSet() sur C7
-		assertEquals(true, Domination.dominates(c7, Domination.dominatingSetGluttonous(c7)) );
+		assertEquals(true, Domination.dominates(c7, Domination.dominatingSetGreedy(c7)) );
 		
 		// Test de smallestDominatingSet() sur K6
-		assertEquals(true, Domination.dominates(k6, Domination.dominatingSetGluttonous(k6)) );
+		assertEquals(true, Domination.dominates(k6, Domination.dominatingSetGreedy(k6)) );
 	}
 
 }

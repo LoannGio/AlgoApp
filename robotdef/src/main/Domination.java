@@ -87,9 +87,8 @@ public class Domination {
 	/* Retourne un ensemble dominant du graphe G qui domine un sous-ensemble 
 	 * de sommets dominated d'un graphe par un ensemble de sommets dans 
 	 * dominating (null si la m�thode gloutonne ne trouve pas de sous-ensemble
-	 * */
-
-	public static <V, E> Set<V> dominatingSetGluttonous(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating) {
+	 *  de taille <= 6 */
+	public static <V, E> Set<V> dominatingSetGreedy(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating) {
 		Set<V> dominatedCopy = new HashSet<V>(dominated);
 		Set<V> dominatingCopy = new HashSet<V>(dominating);
 		SimpleGraph<V, E> GCopy = (SimpleGraph<V, E>) G.clone();
@@ -113,15 +112,17 @@ public class Domination {
 	}
 	
 	/* Retourne un ensemble dominant du graphe G qui domine un sous-ensemble 
-	 * de sommets dominated d'un graphe (null si la m�thode gloutonne ne trouve*/
-	public static <V, E> Set<V> dominatingSetGluttonous(SimpleGraph<V, E> G, Set<V> dominated) {
-		return dominatingSetGluttonous(G, dominated, G.vertexSet());
+	 * de sommets dominated d'un graphe (null si la m�thode gloutonne ne trouve
+	 *  pas de sous-ensemble de taille <= 6 */
+	public static <V, E> Set<V> dominatingSetGreedy(SimpleGraph<V, E> G, Set<V> dominated) {
+		return dominatingSetGreedy(G, dominated, G.vertexSet());
 	}
 	
 	/*Retourne un ensemble dominant du graphe G
-	 * (null si la m�thode gloutonne ne trouve pas de 6 */
-	public static <V, E> Set<V> dominatingSetGluttonous(SimpleGraph<V, E> G) {
-		return dominatingSetGluttonous(G, G.vertexSet());
+	 * (null si la m�thode gloutonne ne trouve pas de 
+	 * sous-ensemble de taille <= 6 */
+	public static <V, E> Set<V> dominatingSetGreedy(SimpleGraph<V, E> G) {
+		return dominatingSetGreedy(G, G.vertexSet());
 	}
 	
 	private static <V, E> V vertexOfHighestDegree(SimpleGraph<V, E> G, Set<V> vertices) {
