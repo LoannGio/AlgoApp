@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.io.DOTExporter;
 import org.json.JSONException;
 
 public class Main {
