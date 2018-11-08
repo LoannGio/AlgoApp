@@ -73,13 +73,13 @@ public class DominationTest {
 	@Test
 	public void test_smallestDominatingSetBruteForce() {
 		// Test de smallestDominatingSet() sur C5
-		assertEquals(2, Domination.smallestDominatingSetBruteForce(c5).size());
+		assertEquals(2, Domination.smallestDominatingSetBruteForce(c5, false).size());
 		
 		// Test de smallestDominatingSet() sur C7
-		assertEquals(3, Domination.smallestDominatingSetBruteForce(c7).size());
+		assertEquals(3, Domination.smallestDominatingSetBruteForce(c7, false).size());
 		
 		// Test de smallestDominatingSet() sur K6
-		assertEquals(1, Domination.smallestDominatingSetBruteForce(k6).size());
+		assertEquals(1, Domination.smallestDominatingSetBruteForce(k6, false).size());
 	}
 	
 	@Test

@@ -51,36 +51,29 @@ public class Domination {
 
 	// Retourne un plus petit ensemble dominant d'un graphe (null si gamma(G) >
 	// 6)
-	public static <V, E> Set<V> smallestDominatingSetBruteForce(SimpleGraph<V, E> G) {
-		for (int i = 0; i <= 6; i++) {
-			for (Set<V> D : SubsetCreator.allSubsetsOfSizeN(G.vertexSet(), i))
-				if (dominates(G, D)) {
-					return D;
-				}
-		}
-		return null;
+	public static <V, E> Set<V> smallestDominatingSetBruteForce(SimpleGraph<V, E> G, boolean collisions) {
+		return smallestDominatingSetBruteForce(G, G.vertexSet(), G.vertexSet(), collisions);
 	}
 
 	// Retourne un plus petit ensemble qui domine un sous-ensemble de sommets d
 	// d'un graphe (null si son cardinal est > 6)
-	public static <V, E> Set<V> smallestDominatingSetBruteForce(SimpleGraph<V, E> G, Set<V> dominated) {
-		for (int i = 0; i <= 6; i++) {
-			for (Set<V> D : SubsetCreator.allSubsetsOfSizeN(G.vertexSet(), i))
-				if (dominates(G, D, dominated)) {
-					return D;
-				}
-		}
-		return null;
+	public static <V, E> Set<V> smallestDominatingSetBruteForce(SimpleGraph<V, E> G, Set<V> dominated, boolean collisions) {
+		return smallestDominatingSetBruteForce(G, dominated, G.vertexSet(), collisions);
 	}
 	
 	/*Retourne un plus petit ensemble qui domine un sous-ensemble de sommets dominated d'un graphe 
 	(null si son cardinal est > 6) par un ensemble de sommets dans dominating*/
-	public static <V, E> Set<V> smallestDominatingSetBruteForce(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating) {
+	public static <V, E> Set<V> smallestDominatingSetBruteForce(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating, boolean collisions) {
 		for (int i = 0; i <= 6; i++) {
-			for(Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i))
+			for(Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i)) {
+				if(collisions) {
+					if(!Independance.isIndependent(G, dominating))
+						continue;
+				}
 				if(dominates(G, D, dominated)) {
 					return D;
 				}
+			}
 		}
 		return null;
 	}
