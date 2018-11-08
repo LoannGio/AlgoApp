@@ -1,5 +1,6 @@
 package main;
 
+import java.io.File;
 import java.util.Set;
 
 import javax.swing.JFileChooser;
@@ -11,6 +12,8 @@ public class Main {
 	public static void main(String[] args) throws JSONException {
 		String filepath = "";
 		JFileChooser chooser = new JFileChooser();
+		File workingDirectory = new File(System.getProperty("user.dir") + "/problems");
+		chooser.setCurrentDirectory(workingDirectory);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON files (*.json)", "json");
 
 		chooser.setFileFilter(filter);
