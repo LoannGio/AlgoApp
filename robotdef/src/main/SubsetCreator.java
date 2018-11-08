@@ -56,7 +56,6 @@ public class SubsetCreator<V> {
 		// nice but
 		// didn't find out how to do it a better way: this is the reason for
 		// using List Interface)
-		// TODO Loann : check avec jonathan
 		it.previous();
 		while (it.hasNext()) {
 			v = it.next();
