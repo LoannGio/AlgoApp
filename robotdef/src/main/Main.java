@@ -18,8 +18,8 @@ public class Main {
 		// Test de smallestDominatingSet()
 		System.out.println("---Test de smallestDominatingSet()");
 		long time = System.currentTimeMillis();
-		Set<RVertex> solution = (Set<RVertex>) Domination.dominatingSetGreedy(G, G.getShotLineVertices(),
-				G.getPositionVertices());
+		Set<RVertex> solution = (Set<RVertex>) Domination.smallestDominatingSetBruteForce(G, G.getShotLineVertices(),
+				G.getPositionVertices(), false);
 		time = System.currentTimeMillis() - time;
 		System.out.println("Duree de la generation de la solution (ms) : " + time);
 		JSonSolution.saveJSonSolution(solution);

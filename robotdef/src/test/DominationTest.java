@@ -13,11 +13,11 @@ import org.junit.Test;
 import main.Domination;
 
 public class DominationTest {
-	//Un cycle de longueur 5
+	// Un cycle de longueur 5
 	private SimpleGraph<Integer, DefaultEdge> c5;
-	//Un cycle de longueur 6
+	// Un cycle de longueur 6
 	private SimpleGraph<Integer, DefaultEdge> c7;
-	//Un graphe complet � 6 sommets
+	// Un graphe complet � 6 sommets
 	private SimpleGraph<Integer, DefaultEdge> k6;
 
 	@Before
@@ -29,7 +29,7 @@ public class DominationTest {
 		for (int i = 0; i < 5; i++) {
 			c5.addEdge(i, (i + 1) % 5);
 		}
-		
+
 		c7 = new SimpleGraph<>(DefaultEdge.class);
 		for (int i = 0; i < 7; i++) {
 			c7.addVertex(i);
@@ -37,13 +37,13 @@ public class DominationTest {
 		for (int i = 0; i < 7; i++) {
 			c7.addEdge(i, (i + 1) % 7);
 		}
-		
+
 		k6 = new SimpleGraph<>(DefaultEdge.class);
 		for (int i = 0; i < 6; i++) {
 			k6.addVertex(i);
 		}
 		for (int i = 0; i < 5; i++) {
-			for (int j = i+1; j < 6; j++)
+			for (int j = i + 1; j < 6; j++)
 				k6.addEdge(i, j);
 		}
 	}
@@ -51,6 +51,8 @@ public class DominationTest {
 	@After
 	public void tearDown() throws Exception {
 		c5 = null;
+		c7 = null;
+		k6 = null;
 	}
 
 	@Test
@@ -74,24 +76,24 @@ public class DominationTest {
 	public void test_smallestDominatingSetBruteForce() {
 		// Test de smallestDominatingSet() sur C5
 		assertEquals(2, Domination.smallestDominatingSetBruteForce(c5, false).size());
-		
+
 		// Test de smallestDominatingSet() sur C7
 		assertEquals(3, Domination.smallestDominatingSetBruteForce(c7, false).size());
-		
+
 		// Test de smallestDominatingSet() sur K6
 		assertEquals(1, Domination.smallestDominatingSetBruteForce(k6, false).size());
 	}
-	
+
 	@Test
 	public void test_dominatingSetGreedy() {
 		// Test de smallestDominatingSet() sur C5
-		assertEquals(true, Domination.dominates(c5, Domination.dominatingSetGreedy(c5)) );
-		
+		assertEquals(true, Domination.dominates(c5, Domination.dominatingSetGreedy(c5)));
+
 		// Test de smallestDominatingSet() sur C7
-		assertEquals(true, Domination.dominates(c7, Domination.dominatingSetGreedy(c7)) );
-		
+		assertEquals(true, Domination.dominates(c7, Domination.dominatingSetGreedy(c7)));
+
 		// Test de smallestDominatingSet() sur K6
-		assertEquals(true, Domination.dominates(k6, Domination.dominatingSetGreedy(k6)) );
+		assertEquals(true, Domination.dominates(k6, Domination.dominatingSetGreedy(k6)));
 	}
 
 }
