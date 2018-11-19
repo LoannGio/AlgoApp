@@ -35,8 +35,8 @@ public class Main {
 
 		// Test de smallestDominatingSet()
 		System.out.println("---Test de smallestDominatingSet()");
-		Set<RVertex> solution = (Set<RVertex>) Domination.smallestDominatingSetBruteForce(G, G.getShotLineVertices(),
-				G.getPositionVertices(), false);
+		Set<RVertex> solution = (Set<RVertex>) Domination.dominatingSetGreedy(G, G.getShotLineVertices(),
+				G.getPositionVertices());
 		JSonSolution.saveJSonSolution(solution);
 		System.out.println(solution);
 		System.out.println(G.getPositionVertices());

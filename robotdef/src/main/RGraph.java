@@ -258,7 +258,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 					double thetaMin,thetaMax;
 					thetaMin = goalAngle.getValue().getKey();
 					thetaMax = goalAngle.getValue().getValue();
-					if(thetaK>= thetaMin && thetaK<= thetaMax)
+					if(thetaK>= thetaMin && thetaK <= thetaMax)
 					{
 						Point2D.Double intersectionPoint = intersection(opp, thetaK, goalAngle.getKey().getKey(), goalAngle.getKey().getValue());
 						Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
