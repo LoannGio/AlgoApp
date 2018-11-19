@@ -1,17 +1,14 @@
 package main;
 
 import java.io.File;
-import java.util.Set;
+import java.io.FileNotFoundException;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.io.DOTExporter;
-import org.json.JSONException;
+public class FileHandler {
 
-public class Main {
-	public static void main(String[] args) throws JSONException {
+	public static String openFile() throws FileNotFoundException {
 		String filepath = "";
 		JFileChooser chooser = new JFileChooser();
 		File workingDirectory = new File(System.getProperty("user.dir") + "/problems");
@@ -24,22 +21,13 @@ public class Main {
 		if (retValue == JFileChooser.APPROVE_OPTION) {
 			filepath = chooser.getSelectedFile().getPath();
 		} else {
-			System.out.println("File not found");
-			return; // ou throw new FileNotFoundException(), mais de toute facon
-					// si il n y a
-					// pas de fichier on execute pas...
+			filepath = null; // ou throw new
+								// FileNotFoundException(), mais de
+								// toute facon
+			// si il n y a
+			// pas de fichier on execute pas...
 		}
-		System.out.println("toto");
-
-		RGraph G = new RGraph(filepath, false);
-
-		// Test de smallestDominatingSet()
-		System.out.println("---Test de smallestDominatingSet()");
-		Set<RVertex> solution = (Set<RVertex>) Domination.dominatingSetGreedy(G, G.getShotLineVertices(),
-				G.getPositionVertices());
-		JSonSolution.saveJSonSolution(solution);
-		System.out.println(solution);
-		System.out.println(G.getPositionVertices());
-		new RGraphVisualizer(G);
+		return filepath;
 	}
+
 }
