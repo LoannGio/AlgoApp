@@ -120,6 +120,47 @@ public class Domination {
 		return dominatingSetGreedy(G, G.vertexSet());
 	}
 	
+	public static <V, E> Set<V> dominatingSetGreedyGoal(SimpleGraph<V, E> G, Set<V> dominatingGoal, Set<V> dominating, Set<V> dominated) {
+		Set<V> dominatedCopy = new HashSet<V>(dominated);
+		Set<V> dominatingCopy = new HashSet<V>(dominating);
+		//dominatingCopy contient tous les sommets de potentiellement dominant
+		SimpleGraph<V, E> GCopy = (SimpleGraph<V, E>) G.clone();
+		Set<V> D = new HashSet<V>();
+		
+		/*On commence par ajouter le sommet sur la surface de réparation de plus grand degré
+		 * et on supprime tous ses voisins puis on fait comme dans la version normale de dominatingSetGreedyGoal
+		 */
+		//Choix du Goal
+		V v = vertexOfHighestDegree(GCopy, dominatingGoal);
+		D.add(v);
+		Set<V> neighbors = Graphs.neighborSetOf(GCopy, v);
+		neighbors = Graphs.neighborSetOf(GCopy, v);
+		GCopy.removeAllVertices(neighbors);
+		dominatedCopy.removeAll(neighbors);
+		dominatingCopy.removeAll(neighbors);
+		GCopy.removeVertex(v);
+		dominatedCopy.remove(v);
+		dominatingCopy.remove(v);			
+		if(dominates(G, dominatedCopy, D))
+			return D;
+		//Choix des autres défenseurs
+		for (int i = 1; i <= 6; i++) {
+			v = vertexOfHighestDegree(GCopy, dominatingCopy);
+			D.add(v);
+			neighbors = Graphs.neighborSetOf(GCopy, v);
+			GCopy.removeAllVertices(neighbors);
+			dominatedCopy.removeAll(neighbors);
+			dominatingCopy.removeAll(neighbors);
+			GCopy.removeVertex(v);
+			dominatedCopy.remove(v);
+			dominatingCopy.remove(v);			
+			if(dominates(G, dominatedCopy, D))
+				return D;			
+		}
+		
+		return null;
+	}
+	
 	private static <V, E> V vertexOfHighestDegree(SimpleGraph<V, E> G, Set<V> vertices) {
 		int max = -1;
 		V res = null;
