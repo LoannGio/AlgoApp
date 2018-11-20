@@ -73,53 +73,11 @@ public class Domination {
 		for (int i = 0; i <= 6; i++) {
 			for (Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i)) {
 				if (collisions) {
-					if (!Independance.isIndependent(G, dominating) && dominates(G, dominated, D))
+					if (!Independance.isIndependent(G, dominating))
 						continue;
-				} else {
-					if (dominates(G, dominated, D))
-						return D;
 				}
-			}
-		}
-		return null;
-	}
-
-	public static <V, E> Set<V> smallestDominatingSetBruteForceGoal(SimpleGraph<V, E> G, Set<V> dominated,
-			Set<V> dominatingGoal, Set<V> dominatingDefenser, boolean collisions) {
-		for (int i = 0; i <= 6; i++) {
-			for (Set<V> D : SubsetCreator.allSubsetsOfSizeNGoal(dominatingGoal, dominatingDefenser, i)) {
-				HashSet<V> unionDominating = new HashSet<V>(dominatingGoal);
-				unionDominating.addAll(new HashSet<V>(dominatingDefenser));
-				if (collisions) {
-					if (!Independance.isIndependent(G, unionDominating) && dominates(G, dominated, D))
-						continue;
-				} else {
-					if (dominates(G, dominated, D))
-						return D;
-				}
-			}
-		}
-		return null;
-	}
-
-	/*
-	 * Retourne un plus petit ensemble qui domine un sous-ensemble de sommets
-	 * dominated d'un graphe (null si son cardinal est > 6) par un ensemble de
-	 * sommets dans dominating (si collisions = true : cet ensemble sera
-	 * indépendant)
-	 */
-	public static <V, E> Set<V> smallestDominatingSetBruteForcePosInit(SimpleGraph<V, E> G, Set<V> dominated,
-			Set<V> dominating, boolean collisions) {
-
-		for (int i = 0; i <= 6; i++) {
-			for (Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i)) {
-				if (collisions) {
-					if (!Independance.isIndependent(G, dominating) && dominates(G, dominated, D))
-						continue;
-				} else {
-					if (dominates(G, dominated, D))
-						return D;
-				}
+				if (dominates(G, dominated, D))
+					return D;
 			}
 		}
 		return null;
@@ -175,7 +133,7 @@ public class Domination {
 			Set<V> dominated) {
 		Set<V> dominatedCopy = new HashSet<V>(dominated);
 		Set<V> dominatingCopy = new HashSet<V>(dominating);
-		// dominatingCopy contient tous les sommets de potentiellement dominant
+		//dominatingCopy contient tous les sommets potentiellement dominant
 		SimpleGraph<V, E> GCopy = (SimpleGraph<V, E>) G.clone();
 		Set<V> D = new HashSet<V>();
 
