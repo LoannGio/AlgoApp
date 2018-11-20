@@ -31,11 +31,11 @@ public class Main {
 		// Test de smallestDominatingSet()
 		System.out.println("---Test de smallestDominatingSet()");
 		long time = System.currentTimeMillis();
-		Set<RVertex> solution =  Domination.smallestDominatingSetBruteForce(G, G.getShotLineVertices(),
-				G.getPositionVertices(), true);
+		/*Set<RVertex> solution =  Domination.smallestDominatingSetBruteForce(G, G.getShotLineVertices(),
+				G.getPositionVertices(), true);*/
 		//Set<RVertex> solution = Domination.dominatingSetGreedy(G, G.getShotLineVertices(), G.getPositionVertices());
 		Set<RVertex> defenders = G.getPositionVertices();
-		//defenders.removeAll(G.getGoalPosition());
+		defenders.removeAll(G.getGoalPosition());
 		//Set<RVertex> solution = Domination.smallestDominatingSetBruteForceGoal(G, G.getShotLineVertices(), G.getGoalPosition(), defenders, false);
 		time = System.currentTimeMillis() - time;
 		System.out.println("Duree de la generation de la solution (ms) : " + time);
