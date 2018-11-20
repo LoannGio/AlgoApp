@@ -484,8 +484,12 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		Set<RVertex> vertices = vertexSet();
 		for(RVertex v : vertices)
 		{
-			if(v.is)
+			if(v.is_goal())
+			{
+				listPositionGoal.add(v);
+			}
 		}
+		return listPositionGoal;
 	}
 	
 	public Set<RVertex> getShotLineVertices()

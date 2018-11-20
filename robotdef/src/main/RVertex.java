@@ -47,6 +47,12 @@ public class RVertex
 		
 	}
 	
+	public boolean is_goal()
+	{
+		return(_type == RVertexType.GOAL_GUY);
+
+	}
+	
 	/*public void set_goodGuy(boolean goodGuy)
 	{
 		_goodGuy = goodGuy;
