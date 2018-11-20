@@ -1,8 +1,19 @@
 package main;
 
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.io.Attribute;
+import org.jgrapht.io.AttributeType;
+import org.jgrapht.io.ComponentAttributeProvider;
+import org.jgrapht.io.ComponentNameProvider;
+import org.jgrapht.io.DOTExporter;
+import org.jgrapht.io.IntegerComponentNameProvider;
 import org.json.JSONException;
 
 public class Main {
@@ -14,6 +25,8 @@ public class Main {
 			return;
 		}
 		RGraph G = new RGraph(filepath, false);
+		
+		
 
 		// Test de smallestDominatingSet()
 		System.out.println("---Test de smallestDominatingSet()");
@@ -25,6 +38,5 @@ public class Main {
 		JSonSolution.saveJSonSolution(solution);
 		System.out.println(solution);
 		System.out.println(G.getPositionVertices());
-		new RGraphVisualizer(G);
 	}
 }
