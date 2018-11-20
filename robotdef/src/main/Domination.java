@@ -67,13 +67,12 @@ public class Domination {
 		for (int i = 0; i <= 6; i++) {
 			for(Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i)) {
 				if(collisions) {
-					if(!Independance.isIndependent(G, dominating) && dominates(G, dominated, D))
+					//Si l'ensemble n'est pas indépendant on ne le considère pas
+					if(!Independance.isIndependent(G, dominating))
 						continue;
 				}
-				else {
-					if (dominates(G, dominated, D))
-						return D;
-				}
+				if (dominates(G, dominated, D))
+					return D;
 			}
 		}
 		return null;
@@ -123,7 +122,7 @@ public class Domination {
 	public static <V, E> Set<V> dominatingSetGreedyGoal(SimpleGraph<V, E> G, Set<V> dominatingGoal, Set<V> dominating, Set<V> dominated) {
 		Set<V> dominatedCopy = new HashSet<V>(dominated);
 		Set<V> dominatingCopy = new HashSet<V>(dominating);
-		//dominatingCopy contient tous les sommets de potentiellement dominant
+		//dominatingCopy contient tous les sommets potentiellement dominant
 		SimpleGraph<V, E> GCopy = (SimpleGraph<V, E>) G.clone();
 		Set<V> D = new HashSet<V>();
 		
