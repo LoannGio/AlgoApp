@@ -449,6 +449,16 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		return listPositionVertices;
 	}
 	
+	public Set<RVertex> getGoalPosition()
+	{
+		HashSet<RVertex> listPositionGoal = new HashSet<>();
+		Set<RVertex> vertices = vertexSet();
+		for(RVertex v : vertices)
+		{
+			if(v.is)
+		}
+	}
+	
 	public Set<RVertex> getShotLineVertices()
 	{
 		HashSet<RVertex> listPositionVertices = new HashSet<>();
