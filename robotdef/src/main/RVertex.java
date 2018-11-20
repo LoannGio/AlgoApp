@@ -13,18 +13,20 @@ public class RVertex
 {
 	
 	
-	public RVertex(java.awt.geom.Point2D _position, double _theta, boolean _goodGuy) 
+	public RVertex(java.awt.geom.Point2D _position, double _theta) 
 	{
 		this._position = _position;
 		this._theta = _theta;
-		this._goodGuy = _goodGuy;
+		//this._goodGuy = _goodGuy;
+		this._type = RVertexType.BAD_GUY;
 	}
 	
-	public RVertex(java.awt.geom.Point2D _position, boolean _goodGuy) 
+	public RVertex(java.awt.geom.Point2D _position, RVertexType _type) 
 	{
 		this._position = _position;
-		this._goodGuy = _goodGuy;
+		//this._goodGuy = _goodGuy;
 		this._theta = 0.0;
+		this._type = _type;
 	}
 
 
@@ -40,15 +42,16 @@ public class RVertex
 	
 	public boolean is_goodGuy()
 	{
-		return _goodGuy;
+		//return _goodGuy;
+		return (_type == RVertexType.GOOD_GUY || _type == RVertexType.GOAL_GUY);
 		
 	}
 	
-	public void set_goodGuy(boolean goodGuy)
+	/*public void set_goodGuy(boolean goodGuy)
 	{
 		_goodGuy = goodGuy;
 		
-	}
+	}*/
 	
 
 	public void set_position(Point2D.Double _position) 
@@ -61,12 +64,24 @@ public class RVertex
 		this._theta = _theta;
 	}
 	
+
+
+
+	public RVertexType get_type() {
+		return _type;
+	}
+
+	public void set_type(RVertexType _type) {
+		this._type = _type;
+	}
+
+
 	
 	
 	@Override
 	public String toString() {
 		String str = "";
-		if(_goodGuy)
+		if(is_goodGuy())
 		{
 			str+="D:" + "[" + _position.getX() + "," + _position.getY() + "]";
 		}
@@ -77,15 +92,21 @@ public class RVertex
 		return str;
 	}
 
+
+
+
+
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (_goodGuy ? 1231 : 1237);
 		result = prime * result + ((_position == null) ? 0 : _position.hashCode());
 		long temp;
 		temp = Double.doubleToLongBits(_theta);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((_type == null) ? 0 : _type.hashCode());
 		return result;
 	}
 
@@ -98,8 +119,6 @@ public class RVertex
 		if (getClass() != obj.getClass())
 			return false;
 		RVertex other = (RVertex) obj;
-		if (_goodGuy != other._goodGuy)
-			return false;
 		if (_position == null) {
 			if (other._position != null)
 				return false;
@@ -107,15 +126,21 @@ public class RVertex
 			return false;
 		if (Double.doubleToLongBits(_theta) != Double.doubleToLongBits(other._theta))
 			return false;
+		if (_type != other._type)
+			return false;
 		return true;
 	}
 
 
 
 
+
+
+
 	private Point2D _position;
 	private double _theta;
-	private boolean _goodGuy;
+	//private boolean _goodGuy;
+	private RVertexType _type;
 	
 	
 }
