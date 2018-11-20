@@ -95,4 +95,36 @@ public class SubsetCreator<V> {
 		}
 		return subsets;
 	}
+
+	@SuppressWarnings("unchecked")
+	private static <V> void generatePermutations(int n, Set<V> set, HashSet<ArrayList<V>> permutations) {
+		if (n == 1) {
+			permutations.add(new ArrayList<V>(set));
+			return;
+		}
+		for (int i = 0; i < n; i++) {
+			generatePermutations(n - 1, set, permutations);
+			V[] arraySet = (V[]) set.toArray();
+			if ((n & 1) == 0) {
+				V tmp = arraySet[i];
+				arraySet[i] = arraySet[n - 1];
+				arraySet[n - 1] = tmp;
+			} else {
+				V tmp = arraySet[0];
+				arraySet[0] = arraySet[n - 1];
+				arraySet[n - 1] = tmp;
+			}
+			set.clear();
+			for (V v : arraySet) {
+				set.add(v);
+			}
+		}
+	}
+
+	public static <V> Set<ArrayList<V>> permutations(Set<V> set) {
+		HashSet<ArrayList<V>> permutations = new HashSet<ArrayList<V>>();
+		int n = set.size();
+		generatePermutations(n, set, permutations);
+		return permutations;
+	}
 }

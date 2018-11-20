@@ -1,5 +1,6 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -110,7 +111,8 @@ public class Domination {
 	 */
 	public static <V, E> Set<V> smallestDominatingSetBruteForcePosInit(SimpleGraph<V, E> G, Set<V> dominated,
 			Set<V> dominating, boolean collisions) {
-
+		int distMaxMin = Integer.MAX_VALUE;
+		ArrayList<V> bestPermutation = new ArrayList<V>();
 		for (int i = 0; i <= 6; i++) {
 			for (Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i)) {
 				if (collisions) {
@@ -120,6 +122,12 @@ public class Domination {
 					if (dominates(G, dominated, D))
 						return D;
 				}
+				// JE LE MET OU ?????
+				/*
+				 * for (ArrayList<V> permutation : permutations(D)) {
+				 * 
+				 * }
+				 */
 			}
 		}
 		return null;
