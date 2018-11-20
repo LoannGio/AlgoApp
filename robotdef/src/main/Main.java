@@ -31,139 +31,16 @@ public class Main {
 		// Test de smallestDominatingSet()
 		System.out.println("---Test de smallestDominatingSet()");
 		long time = System.currentTimeMillis();
-		Set<RVertex> solution = (Set<RVertex>) Domination.smallestDominatingSetBruteForce(G, G.getShotLineVertices(),
-				G.getPositionVertices(), false);
+		/*Set<RVertex> solution =  Domination.smallestDominatingSetBruteForce(G, G.getShotLineVertices(),
+				G.getPositionVertices(), true);*/
+		//Set<RVertex> solution = Domination.dominatingSetGreedy(G, G.getShotLineVertices(), G.getPositionVertices());
+		Set<RVertex> defenders = G.getPositionVertices();
+		defenders.removeAll(G.getGoalPosition());
+		//Set<RVertex> solution = Domination.smallestDominatingSetBruteForceGoal(G, G.getShotLineVertices(), G.getGoalPosition(), defenders, false);
 		time = System.currentTimeMillis() - time;
 		System.out.println("Duree de la generation de la solution (ms) : " + time);
 		JSonSolution.saveJSonSolution(solution);
 		System.out.println(solution);
-		System.out.println(G.getPositionVertices());
-		
-		
-		
-		/*test saving as dot file
-		 * 
-		 * 
-		 * 
-		 */
-		
-		DOTExporter<RVertex, DefaultEdge> dotExporter = new DOTExporter<>(new IntegerComponentNameProvider<>(), new ComponentNameProvider<RVertex>()
-		{
-
-			@Override
-			public String getName(RVertex v)
-			{
-				// TODO Auto-generated method stub
-				String name = "";
-				if(v.is_goodGuy())
-				{
-					name += "d(";
-				}
-				else
-				{
-					name += "o(";
-				}
-				name += v.get_position().getX() + "," + v.get_position().getY();
-				
-				if(v.is_goodGuy())
-				{
-					name += ")";
-				}
-				else 
-				{
-					name += "," + v.get_theta() + ")";
-				}
-				return name;
-			}
-		},null,
-		new ComponentAttributeProvider<RVertex>()
-		{
-
-			@Override
-			public Map<String, Attribute> getComponentAttributes(RVertex v)
-			{
-				Map<String,Attribute> mapAttributes = new HashMap<>();
-				if(solution.contains(v))
-				{
-					mapAttributes.put("color", new Attribute()
-					{
-						
-						@Override
-						public String getValue()
-						{
-							return "red";
-
-						}
-						
-						@Override
-						public AttributeType getType()
-						{
-							return AttributeType.STRING;
-						}
-					});
-					mapAttributes.put("style", new Attribute()
-					{
-						
-						@Override
-						public String getValue()
-						{
-							return "filled";
-						}
-						
-						@Override
-						public AttributeType getType()
-						{
-							return AttributeType.STRING;
-						}
-					});
-				}
-				return mapAttributes;
-			}
-		},
-		new ComponentAttributeProvider<DefaultEdge>()
-		{
-
-			@Override
-			public Map<String, Attribute> getComponentAttributes(DefaultEdge e)
-			{
-				Map<String,Attribute> mapAttribute = new HashMap<>();
-				if(solution.contains(G.getEdgeSource(e)) || solution.contains(G.getEdgeTarget(e)))				
-				{
-					mapAttribute.put("color", new Attribute()
-					{
-						
-						@Override
-						public String getValue()
-						{
-							return "red";
-						}
-						
-						@Override
-						public AttributeType getType()
-						{
-							return AttributeType.STRING;
-						}
-					});
-					
-				}
-				
-				return mapAttribute;
-			}
-		});
-		dotExporter.putGraphAttribute("ratio", "0.025");
-		FileWriter fileWriter = null;
-		try {
-			fileWriter = new FileWriter("solution.dot");
-			dotExporter.exportGraph(G, fileWriter);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		/*
-		 * 
-		 * end test
-		 */
+		//System.out.println(G.getPositionVertices());
 	}
 }

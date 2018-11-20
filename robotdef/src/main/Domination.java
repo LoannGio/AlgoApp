@@ -74,12 +74,11 @@ public class Domination {
 		for (int i = 0; i <= 6; i++) {
 			for (Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i)) {
 				if (collisions) {
-					if (!Independance.isIndependent(G, dominating) && dominates(G, dominated, D))
+					if (!Independance.isIndependent(G, dominating))
 						continue;
-				} else {
-					if (dominates(G, dominated, D))
-						return D;
 				}
+				if (dominates(G, dominated, D))
+					return D;
 			}
 		}
 		return null;
@@ -183,7 +182,7 @@ public class Domination {
 			Set<V> dominated) {
 		Set<V> dominatedCopy = new HashSet<V>(dominated);
 		Set<V> dominatingCopy = new HashSet<V>(dominating);
-		// dominatingCopy contient tous les sommets de potentiellement dominant
+		// dominatingCopy contient tous les sommets potentiellement dominant
 		SimpleGraph<V, E> GCopy = (SimpleGraph<V, E>) G.clone();
 		Set<V> D = new HashSet<V>();
 
