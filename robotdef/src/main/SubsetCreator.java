@@ -97,34 +97,33 @@ public class SubsetCreator<V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <V> void generatePermutations(int n, Set<V> set, HashSet<ArrayList<V>> permutations) {
+	private static <V> void generatePermutations(int n, ArrayList<V> listSet, ArrayList<ArrayList<V>> permutations) {
 		if (n == 1) {
-			permutations.add(new ArrayList<V>(set));
+			permutations.add(new ArrayList<V>(listSet));
 			return;
 		}
 		for (int i = 0; i < n; i++) {
-			generatePermutations(n - 1, set, permutations);
-			V[] arraySet = (V[]) set.toArray();
+			generatePermutations(n - 1, listSet, permutations);
 			if ((n & 1) == 0) {
-				V tmp = arraySet[i];
-				arraySet[i] = arraySet[n - 1];
-				arraySet[n - 1] = tmp;
+				V tmp = listSet.get(i);
+				listSet.set(i, listSet.get(n - 1));
+				listSet.set(n - 1, tmp);
 			} else {
-				V tmp = arraySet[0];
-				arraySet[0] = arraySet[n - 1];
-				arraySet[n - 1] = tmp;
-			}
-			set.clear();
-			for (V v : arraySet) {
-				set.add(v);
+				V tmp = listSet.get(0);
+				listSet.set(0, listSet.get(n - 1));
+				listSet.set(n - 1, tmp);
 			}
 		}
 	}
 
-	public static <V> Set<ArrayList<V>> permutations(Set<V> set) {
-		HashSet<ArrayList<V>> permutations = new HashSet<ArrayList<V>>();
+	public static <V> ArrayList<ArrayList<V>> permutations(Set<V> set) {
+		ArrayList<ArrayList<V>> permutations = new ArrayList<ArrayList<V>>();
 		int n = set.size();
-		generatePermutations(n, set, permutations);
+		ArrayList<V> listSet = new ArrayList<V>();
+		for (V v : set) {
+			listSet.add(v);
+		}
+		generatePermutations(n, listSet, permutations);
 		return permutations;
 	}
 }

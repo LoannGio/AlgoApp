@@ -79,6 +79,62 @@ public class SubsetCreatorTest<V> {
 		assertEquals(myEqual(truth, result), true);
 	}
 
+	@Test
+	public void test_permutations() {
+		// Test sur [0, 1, 2]
+		HashSet D3 = new HashSet<Integer>();
+		int n = 3;
+		for (int i = 0; i < n; i++) {
+			D3.add(i);
+		}
+		ArrayList<ArrayList<Integer>> permutations = SubsetCreator.permutations(D3);
+
+		ArrayList<ArrayList<Integer>> truth = new ArrayList<ArrayList<Integer>>();
+		truth.add(new ArrayList<Integer>() {
+			{
+				add(0);
+				add(1);
+				add(2);
+			}
+		});
+		truth.add(new ArrayList<Integer>() {
+			{
+				add(1);
+				add(0);
+				add(2);
+			}
+		});
+		truth.add(new ArrayList<Integer>() {
+			{
+				add(2);
+				add(0);
+				add(1);
+			}
+		});
+		truth.add(new ArrayList<Integer>() {
+			{
+				add(0);
+				add(2);
+				add(1);
+			}
+		});
+		truth.add(new ArrayList<Integer>() {
+			{
+				add(1);
+				add(2);
+				add(0);
+			}
+		});
+		truth.add(new ArrayList<Integer>() {
+			{
+				add(2);
+				add(1);
+				add(0);
+			}
+		});
+		assertEquals(truth.toString(), permutations.toString());
+	}
+
 	private boolean myEqual(HashSet<HashSet<Integer>> set1, HashSet<HashSet<Integer>> set2) {
 		if (set1.size() != set2.size())
 			return false;
