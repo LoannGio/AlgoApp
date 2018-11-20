@@ -2,6 +2,7 @@ package main;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.AbstractMap.SimpleEntry;
@@ -51,9 +52,11 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 
 		for (Entry<Line2D.Double,Double> l : listShotLine) 
 		{
-			addVertex(new RVertex(l.getKey().getP1(),l.getValue(), false));
+			addVertex(new RVertex(l.getKey().getP1(),l.getValue()));
 		}
 		double robotRadius = getRobotRadius(problemObject);
+		Rectangle2D.Double goalArea;
+		goalArea = getGoalArea(problemObject);
 
 
 		for (Entry<Line2D.Double,Double> line : listShotLine) 
@@ -65,9 +68,18 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 				// there is a defense position
 				if (line.getKey().ptSegDist(pos) < robotRadius && pos.distance(line.getKey().getP1()) > 2.0 * robotRadius) 
 				{
-
-					addVertex(new RVertex(pos, true));
-					addEdge(new RVertex(line.getKey().getP1(),line.getValue(),false), new RVertex(pos, true));
+					RVertex v;
+					if(goalArea.contains(pos)) // check if the vertex posisytion is in the goal area: if it is the case, the vertex is considered goal
+					{
+						v = new RVertex(pos,RVertexType.GOAL_GUY);
+					}
+					else
+					{
+						v = new RVertex(pos, RVertexType.GOOD_GUY);
+					}
+					
+					addVertex(v);
+					addEdge(new RVertex(line.getKey().getP1(),line.getValue()), v);
 				}
 			}
 		}
@@ -90,6 +102,23 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 
 		}*/
 
+	}
+	
+	private Rectangle2D.Double getGoalArea(JSONObject problemObject)
+	{
+		try 
+		{
+			JSONArray goalAreaArray = problemObject.getJSONArray("goal_area");
+			JSONArray xArray = goalAreaArray.getJSONArray(0);
+			JSONArray yArray = goalAreaArray.getJSONArray(1);
+			
+			Rectangle2D.Double goalArea = new Rectangle2D.Double(Math.min(xArray.getDouble(0),xArray.getDouble(1)),Math.min(yArray.getDouble(0),yArray.getDouble(1)), Math.abs(xArray.getDouble(0) - xArray.getDouble(1)), Math.abs(yArray.getDouble(0) - yArray.getDouble(1)));
+			return goalArea;
+		} 
+		catch (JSONException e) 
+		{
+			return new Rectangle2D.Double(0.0, 0.0, 0.0, 0.0);
+		}
 	}
 	
 
