@@ -13,13 +13,16 @@ import org.junit.Test;
 import main.SubsetCreator;
 
 public class SubsetCreatorTest<V> {
+	public HashSet<HashSet<Integer>> result;
 
 	@Before
 	public void setUp() throws Exception {
+		result = new HashSet<HashSet<Integer>>();
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		result = null;
 	}
 
 	@Test
@@ -50,12 +53,37 @@ public class SubsetCreatorTest<V> {
 		assertEquals(myEqual(truth, result), true);
 	}
 
+	@Test
+	public void test_allSubsetsOfSizeNGoal() {
+		HashSet goalKeeperPositions = new HashSet<Integer>();
+		int n = 2;
+		int k = 2;
+		for (int i = 0; i < n; i++) {
+			goalKeeperPositions.add(i);
+		}
+
+		HashSet defenserPositions = new HashSet<Integer>();
+		for (int i = n; i < n + 3; i++) {
+			defenserPositions.add(i);
+		}
+		result = SubsetCreator.allSubsetsOfSizeNGoal(goalKeeperPositions, defenserPositions, k);
+		HashSet<HashSet<Integer>> truth = new HashSet<HashSet<Integer>>();
+		HashSet<HashSet<Integer>> tmp;
+		for (int i = 0; i < n; i++) {
+			tmp = SubsetCreator.allSubsetsOfSizeN(defenserPositions, k - 1);
+			for (HashSet<Integer> subset : tmp) {
+				subset.add(i);
+				truth.add(subset);
+			}
+		}
+		assertEquals(myEqual(truth, result), true);
+	}
+
 	private boolean myEqual(HashSet<HashSet<Integer>> set1, HashSet<HashSet<Integer>> set2) {
 		if (set1.size() != set2.size())
 			return false;
 
 		ArrayList<Integer> tmp;
-
 		ArrayList<ArrayList<Integer>> list1 = new ArrayList<ArrayList<Integer>>();
 		for (HashSet<Integer> subset : set1) {
 			tmp = new ArrayList<Integer>();
