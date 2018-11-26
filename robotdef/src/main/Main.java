@@ -1,33 +1,29 @@
 package main;
 
 import java.io.FileNotFoundException;
-import java.util.Set;
 
 import org.json.JSONException;
 
 public class Main {
 	public static void main(String[] args) throws JSONException, FileNotFoundException {
-
+		// Select file name
 		String filepath = FileHandler.openFile();
 		if (filepath == null) {
 			System.out.println("File not found");
 			return;
 		}
-		RGraph G = new RGraph(filepath, false);
 
-		System.out.println("---Test de smallestDominatingSetBruteForcePosInit");
-		long time = System.currentTimeMillis();
-		/*
-		 * Set<RVertex> solution =
-		 * Domination.smallestDominatingSetBruteForcePosInit(G,
-		 * G.getShotLineVertices(), G.getPositionVertices(),
-		 * G.getInitPosDefenders(), false);
-		 */
+		// Select problem extansion
+		String[] extension = new String[1];
+		extension[0] = "Normal";
+		Boolean[] collision = new Boolean[1];
+		collision[0] = false;
+		new ExtensionChooserFrame(extension, collision, "Select extension");
 
-		Set<RVertex> solution = Domination.dominatingSetGreedyPosInit(G, G.getShotLineVertices(),
-				G.getPositionVertices(), G.getInitPosDefenders());
-		time = System.currentTimeMillis() - time;
-		System.out.println("Duree de la generation de la solution (ms) : " + time);
-		JSonSolution.saveJSonSolution(solution);
+		// Create graph
+		RGraph G = new RGraph(filepath, collision[0]);
+
+		// Run algo
+		new AlgoRunner(G, extension[0], collision[0]);
 	}
 }
