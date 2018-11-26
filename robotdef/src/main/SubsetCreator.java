@@ -14,17 +14,22 @@ public class SubsetCreator<V> {
 		HashSet<HashSet<V>> subsets = new HashSet<HashSet<V>>();
 		HashSet<HashSet<V>> tmp;
 
+
 		// pour chaque position que peut prendre le goal
 		for (V v : Sgoal) {
 			tmp = new HashSet<HashSet<V>>();
-			tmp = allSubsetsOfSizeN(S, k - 1);
 
-			// on ajoute le gardien à chaque solution trouvee
-			for (HashSet<V> subset : tmp) {
-				subset.add(v);
-				subsets.add(subset); // devrais marcher
+				tmp = allSubsetsOfSizeN(S, k - 1);
+
+				// on ajoute le gardien ï¿½ chaque solution trouvee
+				for (HashSet<V> subset : tmp) {
+					subset.add(v);
+					subsets.add(subset); // devrait marcher
+				}
 			}
-		}
+
+
+		
 
 		return subsets;
 	}
@@ -59,7 +64,7 @@ public class SubsetCreator<V> {
 		// :start.
 		List<List<V>> subsets = new Vector<>();
 		// k=0 => returning singleton "emptyset"
-		if (k == 0) {
+		if (k <= 0) {
 			subsets.add(new Vector<>());
 			return subsets;
 		}
