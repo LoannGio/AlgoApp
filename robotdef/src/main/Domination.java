@@ -127,7 +127,6 @@ public class Domination {
 							distMaxMin = dist;
 						}
 					}
-
 				}
 			}
 		}
@@ -173,6 +172,40 @@ public class Domination {
 		}
 
 		return null;
+	}
+
+	public static <V, E> Set<V> dominatingSetGreedyPosInit(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating,
+			ArrayList<Point2D> initPos) {
+		Set<V> dominatedCopy = new HashSet<V>(dominated);
+		Set<V> dominatingCopy = new HashSet<V>(dominating);
+		SimpleGraph<V, E> GCopy = (SimpleGraph<V, E>) G.clone();
+		Set<V> D = new HashSet<V>();
+		double distMaxMin = Integer.MAX_VALUE;
+		ArrayList<V> bestPermutation = new ArrayList<V>();
+		for (int i = 1; i <= initPos.size(); i++) {
+			V v = vertexOfHighestDegree(GCopy, dominatingCopy);
+			D.add(v);
+			Set<V> neighbors = Graphs.neighborSetOf(GCopy, v);
+			GCopy.removeAllVertices(neighbors);
+			dominatedCopy.removeAll(neighbors);
+			dominatingCopy.removeAll(neighbors);
+			GCopy.removeVertex(v);
+			dominatedCopy.remove(v);
+			dominatingCopy.remove(v);
+
+			if (dominates(G, dominatedCopy, D)) {
+				ArrayList<ArrayList<V>> permutations = SubsetCreator.permutations(D);
+				for (ArrayList<V> permutation : permutations) {
+					double dist = SmallestLongestDistance(permutation, initPos);
+					if (distMaxMin > dist) {
+						bestPermutation = permutation;
+						distMaxMin = dist;
+					}
+				}
+			}
+		}
+
+		return new HashSet<V>(bestPermutation);
 	}
 
 	/*

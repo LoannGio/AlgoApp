@@ -17,13 +17,16 @@ public class Main {
 
 		System.out.println("---Test de smallestDominatingSetBruteForcePosInit");
 		long time = System.currentTimeMillis();
-		Set<RVertex> solution = Domination.smallestDominatingSetBruteForcePosInit(G, G.getShotLineVertices(),
-				G.getPositionVertices(), G.getInitPosDefenders(), false);
-
 		/*
-		 * Set<RVertex> solution = Domination.smallestDominatingSetBruteForce(G,
-		 * G.getShotLineVertices(), G.getPositionVertices(), true);
+		 * Set<RVertex> solution =
+		 * Domination.smallestDominatingSetBruteForcePosInit(G,
+		 * G.getShotLineVertices(), G.getPositionVertices(),
+		 * G.getInitPosDefenders(), false);
 		 */
+
+		Set<RVertex> solution = Domination.dominatingSetGreedyPosInit(G, G.getShotLineVertices(),
+				G.getPositionVertices(), G.getInitPosDefenders());
+
 		time = System.currentTimeMillis() - time;
 		System.out.println("Duree de la generation de la solution (ms) : " + time);
 		JSonSolution.saveJSonSolution(solution);
