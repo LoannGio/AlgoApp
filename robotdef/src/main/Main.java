@@ -26,7 +26,7 @@ public class Main {
 		long time = System.currentTimeMillis();
 		Set<RVertex> solution = null;
 		//solution = Domination.dominatingSetGreedyGoal(G, G.getGoalPosition(), normalDefenders, G.getShotLineVertices());
-		solution = Domination.smallestDominatingSetBruteForceGoal(G, normalDefenders, G.getGoalPosition(), G.getShotLineVertices(), false);
+		solution = Domination.smallestDominatingSetBruteForceGoal(G, G.getShotLineVertices(), G.getGoalPosition(), normalDefenders, true);
 		if(solution == null)
 		{
 			System.out.println("not ok");

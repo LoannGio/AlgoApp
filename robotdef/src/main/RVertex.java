@@ -71,8 +71,17 @@ public class RVertex {
 	@Override
 	public String toString() {
 		String str = "";
-		if (is_goodGuy()) {
-			str += "D:" + "[" + _position.getX() + "," + _position.getY() + "]";
+		if (is_goodGuy()) 
+		{
+			if(_type == RVertexType.GOAL_GUY)
+			{
+				str += "G:";
+			}
+			else
+			{
+				str += "D:";
+			}
+			str +=  "[" + _position.getX() + "," + _position.getY() + "]";
 		} else {
 			str += "T:" + "[" + _position.getX() + "," + _position.getY() + "]" + "::" + _theta;
 		}

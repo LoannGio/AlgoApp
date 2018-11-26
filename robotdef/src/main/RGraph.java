@@ -24,7 +24,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 	
 	
 	
-	
+	private ArrayList<Point2D> InitPosDefenders = new ArrayList<Point2D>();
 	
 	
 	
@@ -34,7 +34,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 		// TODO Auto-generated constructor stub
 	}
 
-	private ArrayList<Point2D> InitPosDefenders = new ArrayList<Point2D>();
+
 	// vertices are 3-uplets (position,theta,bool): shotline vertices are
 	// characterized by their position the angle of the shot and the bool is
 	// false;
