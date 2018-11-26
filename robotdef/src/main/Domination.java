@@ -119,7 +119,6 @@ public class Domination {
 					continue;
 				}
 				if (dominates(G, dominated, D)) {
-					System.out.println("dominates");
 					ArrayList<ArrayList<V>> permutations = SubsetCreator.permutations(D);
 					for (ArrayList<V> permutation : permutations) {
 						double dist = SmallestLongestDistance(permutation, initPos);
