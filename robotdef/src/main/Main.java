@@ -36,7 +36,8 @@ public class Main {
 		//Set<RVertex> solution = Domination.dominatingSetGreedy(G, G.getShotLineVertices(), G.getPositionVertices());
 		Set<RVertex> defenders = G.getPositionVertices();
 		defenders.removeAll(G.getGoalPosition());
-		//Set<RVertex> solution = Domination.smallestDominatingSetBruteForceGoal(G, G.getShotLineVertices(), G.getGoalPosition(), defenders, false);
+		//Set<RVertex> solution = Domination.smallestDominatingSetBruteForceGoal(G, G.getGoalPosition(), defenders,G.getShotLineVertices(), false);
+		Set<RVertex> solution = Domination.dominatingSetGreedyGoal(G, G.getGoalPosition(), defenders, G.getShotLineVertices());
 		time = System.currentTimeMillis() - time;
 		System.out.println("Duree de la generation de la solution (ms) : " + time);
 		JSonSolution.saveJSonSolution(solution);
