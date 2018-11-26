@@ -9,26 +9,30 @@ public class Main {
 	public static void main(String[] args) throws JSONException, FileNotFoundException {
 
 		String filepath = FileHandler.openFile();
-		if (filepath == null) {
+		if (filepath == null) 
+		{
 			System.out.println("File not found");
 			return;
 		}
-		RGraph G = new RGraph(filepath, false);
-		
-		SATReduction.reduction(G, "reduction.txt");
+		RGraph G = new RGraph(filepath, true);
 
 		System.out.println("---Test de smallestDominatingSetBruteForcePosInit");
+		Set<RVertex> normalDefenders = G.getPositionVertices();
+		normalDefenders.removeAll(G.getGoalPosition());
+		
+	
+		/*Set<RVertex> solution = Domination.dominatingSetGreedyPosInit(G, G.getShotLineVertices(),
+				G.getPositionVertices(), G.getInitPosDefenders());*/
 		long time = System.currentTimeMillis();
-		/*
-		 * Set<RVertex> solution =
-		 * Domination.smallestDominatingSetBruteForcePosInit(G,
-		 * G.getShotLineVertices(), G.getPositionVertices(),
-		 * G.getInitPosDefenders(), false);
-		 */
-
-		Set<RVertex> solution = Domination.dominatingSetGreedyPosInit(G, G.getShotLineVertices(),
-				G.getPositionVertices(), G.getInitPosDefenders());
-
+		Set<RVertex> solution = null;
+		//solution = Domination.dominatingSetGreedyGoal(G, G.getGoalPosition(), normalDefenders, G.getShotLineVertices());
+		solution = Domination.smallestDominatingSetBruteForceGoal(G, normalDefenders, G.getGoalPosition(), G.getShotLineVertices(), false);
+		if(solution == null)
+		{
+			System.out.println("not ok");
+		}
+		
+		//solution = Domination.smallestDominatingSetBruteForce(G, G.getShotLineVertices(), G.getPositionVertices(), true);
 		time = System.currentTimeMillis() - time;
 		System.out.println("Duree de la generation de la solution (ms) : " + time);
 		JSonSolution.saveJSonSolution(solution);

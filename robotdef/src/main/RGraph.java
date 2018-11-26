@@ -47,6 +47,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 		}
 		double robotRadius = getRobotRadius(problemObject);
 		Rectangle2D.Double goalArea;
+		
 		goalArea = getGoalArea(problemObject);
 
 		for (Entry<Line2D.Double, Double> line : listShotLine) {
@@ -120,7 +121,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 
 	private Rectangle2D.Double getGoalArea(JSONObject problemObject) {
 		try {
-			JSONArray goalAreaArray = problemObject.getJSONArray("goal_area");
+			JSONArray goalAreaArray = problemObject.getJSONArray("goalkeeper_area");
 			JSONArray xArray = goalAreaArray.getJSONArray(0);
 			JSONArray yArray = goalAreaArray.getJSONArray(1);
 
