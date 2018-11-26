@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -73,9 +74,8 @@ public class Domination {
 			Set<V> dominating, boolean collisions) {
 		for (int i = 0; i <= 6; i++) {
 			for (Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i)) {
-				if (collisions) {
-					if (!Independance.isIndependent(G, dominating))
-						continue;
+				if (collisions && !Independance.isIndependent(G, dominating)) {
+					continue;
 				}
 				if (dominates(G, dominated, D))
 					return D;
@@ -109,27 +109,42 @@ public class Domination {
 	 * indépendant)
 	 */
 	public static <V, E> Set<V> smallestDominatingSetBruteForcePosInit(SimpleGraph<V, E> G, Set<V> dominated,
-			Set<V> dominating, boolean collisions) {
-		int distMaxMin = Integer.MAX_VALUE;
+			Set<V> dominating, ArrayList<Point2D> initPos, boolean collisions) {
+		double distMaxMin = Integer.MAX_VALUE;
 		ArrayList<V> bestPermutation = new ArrayList<V>();
-		for (int i = 0; i <= 6; i++) {
-			for (Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i)) {
-				if (collisions) {
-					if (!Independance.isIndependent(G, dominating) && dominates(G, dominated, D))
-						continue;
-				} else {
-					if (dominates(G, dominated, D))
-						return D;
+		for (int i = 0; i <= initPos.size(); i++) {
+			HashSet<HashSet<V>> subsets = SubsetCreator.allSubsetsOfSizeN(dominating, i);
+			for (Set<V> D : subsets) {
+				if (collisions && !Independance.isIndependent(G, dominating)) {
+					continue;
 				}
-				// JE LE MET OU ?????
-				/*
-				 * for (ArrayList<V> permutation : permutations(D)) {
-				 * 
-				 * }
-				 */
+				if (dominates(G, dominated, D)) {
+					System.out.println("dominates");
+					ArrayList<ArrayList<V>> permutations = SubsetCreator.permutations(D);
+					for (ArrayList<V> permutation : permutations) {
+						double dist = SmallestLongestDistance(permutation, initPos);
+						if (distMaxMin > dist) {
+							bestPermutation = permutation;
+							distMaxMin = dist;
+						}
+					}
+
+				}
 			}
 		}
-		return null;
+		return new HashSet<V>(bestPermutation);
+	}
+
+	private static <V, E> double SmallestLongestDistance(ArrayList<V> permutation, ArrayList<Point2D> initPos) {
+		double distMaxMin = Integer.MAX_VALUE;
+		for (int i = 0; i < permutation.size() - 1; i++) {
+			RVertex vertex = (RVertex) permutation.get(i);
+			double dist = Math.sqrt(Math.pow(vertex.get_position().getY() - initPos.get(i).getY(), 2)
+					+ Math.pow(vertex.get_position().getX() - initPos.get(i).getX(), 2));
+			if (distMaxMin > dist)
+				distMaxMin = dist;
+		}
+		return distMaxMin;
 	}
 
 	/*

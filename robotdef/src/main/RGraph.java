@@ -6,13 +6,12 @@ import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import javax.sound.sampled.ReverbType;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
@@ -20,115 +19,126 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 //class representing the model graph of the problem
-public class RGraph extends SimpleGraph<RVertex, DefaultEdge> 
-{
+public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
+	private ArrayList<Point2D> InitPosDefenders = new ArrayList<Point2D>();
+	// vertices are 3-uplets (position,theta,bool): shotline vertices are
+	// characterized by their position the angle of the shot and the bool is
+	// false;
+	// position vertices are characterized by their position, and the bool is
+	// true (the theat angla value is not used in this case.
 
-	//vertices are 3-uplets (position,theta,bool): shotline vertices are characterized by their position the angle of the shot and the bool is false;
-	//position vertices are characterized by their position, and the bool is true (the theat angla value is not used in this case.
-	
-	//constructor from JSON file
-	public RGraph(String filename, boolean collision) throws JSONException 
-	{
+	// constructor from JSON file
+	public RGraph(String filename, boolean collision) throws JSONException {
 		super(DefaultEdge.class);
-		
-		//parsing JSON file
+
+		// parsing JSON file
 		String problemString = readFile(filename);
 		JSONObject problemObject = new JSONObject(problemString);
 
 		// generating the list of possible position
 		Set<Point2D.Double> listPoint = generatePointList(problemObject);
-		
 
 		// for each opponent, getting shot on target
-		Set<Entry<Line2D.Double,Double>> listShotLine = getShotLineOnTarget(problemObject);
-		
-		for(Entry<Line2D.Double,Double> e : listShotLine)
-		{
-			System.out.println(e.getKey().getP1() + ":::" + e.getKey().getP2());
-		}
+		Set<Entry<Line2D.Double, Double>> listShotLine = getShotLineOnTarget(problemObject);
 
-
-		for (Entry<Line2D.Double,Double> l : listShotLine) 
-		{
-			addVertex(new RVertex(l.getKey().getP1(),l.getValue()));
+		for (Entry<Line2D.Double, Double> l : listShotLine) {
+			addVertex(new RVertex(l.getKey().getP1(), l.getValue()));
 		}
 		double robotRadius = getRobotRadius(problemObject);
 		Rectangle2D.Double goalArea;
 		goalArea = getGoalArea(problemObject);
 
+		for (Entry<Line2D.Double, Double> line : listShotLine) {
+			for (Point2D.Double pos : listPoint) {
+				// System.out.println("distance from line" +
+				// line.getKey().getP1() + "," + line.getKey().getP2() + " of
+				// point:" + pos.getX() + "," + pos.getY() + "=" +
+				// line.getKey().ptLineDist(pos));
 
-		for (Entry<Line2D.Double,Double> line : listShotLine) 
-		{
-			for (Point2D.Double pos : listPoint) 
-			{
-				//System.out.println("distance from line" + line.getKey().getP1() + "," + line.getKey().getP2() + " of point:" + pos.getX() + "," + pos.getY() + "=" + line.getKey().ptLineDist(pos));
-				
 				// there is a defense position
-				if (line.getKey().ptSegDist(pos) < robotRadius && pos.distance(line.getKey().getP1()) > 2.0 * robotRadius) 
-				{
+				if (line.getKey().ptSegDist(pos) < robotRadius
+						&& pos.distance(line.getKey().getP1()) > 2.0 * robotRadius) {
 					RVertex v;
-					if(goalArea.contains(pos)) // check if the vertex posisytion is in the goal area: if it is the case, the vertex is considered goal
+					if (goalArea.contains(pos)) // check if the vertex
+												// posisytion is in the goal
+												// area: if it is the case, the
+												// vertex is considered goal
 					{
-						v = new RVertex(pos,RVertexType.GOAL_GUY);
-					}
-					else
-					{
+						v = new RVertex(pos, RVertexType.GOAL_GUY);
+					} else {
 						v = new RVertex(pos, RVertexType.GOOD_GUY);
 					}
-					
+
 					addVertex(v);
-					addEdge(new RVertex(line.getKey().getP1(),line.getValue()), v);
+					addEdge(new RVertex(line.getKey().getP1(), line.getValue()), v);
 				}
 			}
 		}
 
-		//handling collision between defenders
+		// handling collision between defenders
 		if (collision) {
 			for (RVertex v1 : vertexSet()) {
 				for (RVertex v2 : vertexSet()) {
-					if (v1 != v2 && v1.is_goodGuy() && v2.is_goodGuy() && v1.get_position().distance(v2.get_position()) < 2.0 * robotRadius) {
+					if (v1 != v2 && v1.is_goodGuy() && v2.is_goodGuy()
+							&& v1.get_position().distance(v2.get_position()) < 2.0 * robotRadius) {
 						addEdge(v1, v2);
 					}
 				}
 			}
 		}
-		
-		//System.out.println(edgeSet().size());
-		/*Set<RVertex> listShotLines = getShotLineVertices();
-		for(RVertex v : listShotLines)
-		{
 
-		}*/
-
+		// System.out.println(edgeSet().size());
+		/*
+		 * Set<RVertex> listShotLines = getShotLineVertices(); for(RVertex v :
+		 * listShotLines) {
+		 * 
+		 * }
+		 */
+		loadInitPosDefenders(problemObject);
 	}
-	
-	private Rectangle2D.Double getGoalArea(JSONObject problemObject)
-	{
-		try 
-		{
+
+	private void loadInitPosDefenders(JSONObject problemObject) throws JSONException {
+		try {
+			JSONArray initPos = problemObject.getJSONArray("defenders");
+			ArrayList<JSONArray> arrays = new ArrayList<JSONArray>();
+			int cptDefenders = 0;
+			while (cptDefenders < initPos.length()) {
+				arrays.add(initPos.getJSONArray(cptDefenders));
+				cptDefenders++;
+			}
+			for (JSONArray array : arrays) {
+				Point2D defenderPos = new Point2D.Double(array.getDouble(0), array.getDouble(1));
+				InitPosDefenders.add(defenderPos);
+			}
+			System.out.println("---Load init pos");
+			System.out.println(InitPosDefenders);
+		} catch (JSONException je) {
+
+		}
+	}
+
+	private Rectangle2D.Double getGoalArea(JSONObject problemObject) {
+		try {
 			JSONArray goalAreaArray = problemObject.getJSONArray("goal_area");
 			JSONArray xArray = goalAreaArray.getJSONArray(0);
 			JSONArray yArray = goalAreaArray.getJSONArray(1);
-			
-			Rectangle2D.Double goalArea = new Rectangle2D.Double(Math.min(xArray.getDouble(0),xArray.getDouble(1)),Math.min(yArray.getDouble(0),yArray.getDouble(1)), Math.abs(xArray.getDouble(0) - xArray.getDouble(1)), Math.abs(yArray.getDouble(0) - yArray.getDouble(1)));
+
+			Rectangle2D.Double goalArea = new Rectangle2D.Double(Math.min(xArray.getDouble(0), xArray.getDouble(1)),
+					Math.min(yArray.getDouble(0), yArray.getDouble(1)),
+					Math.abs(xArray.getDouble(0) - xArray.getDouble(1)),
+					Math.abs(yArray.getDouble(0) - yArray.getDouble(1)));
 			return goalArea;
-		} 
-		catch (JSONException e) 
-		{
+		} catch (JSONException e) {
 			return new Rectangle2D.Double(0.0, 0.0, 0.0, 0.0);
 		}
 	}
-	
 
-	private double getRobotRadius(JSONObject problemObject) throws JSONException 
-	{
+	private double getRobotRadius(JSONObject problemObject) throws JSONException {
 		return problemObject.getDouble("robot_radius");
 	}
 
-	private Set<Entry<Point2D.Double, Point2D.Double>> generateListGoal(JSONObject problemObject) throws JSONException 
-	{
+	private Set<Entry<Point2D.Double, Point2D.Double>> generateListGoal(JSONObject problemObject) throws JSONException {
 		HashSet<Entry<Point2D.Double, Point2D.Double>> listGoal = new HashSet<>();
 
 		JSONArray list = problemObject.getJSONArray("goals");
@@ -152,152 +162,127 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 
 	}
 
-	private Set<Entry<Line2D.Double,Double>> getShotLineOnTarget(JSONObject problemObject) throws JSONException 
-	{
-		Set<Entry<Line2D.Double,Double>> listShot = new HashSet<>();
+	private Set<Entry<Line2D.Double, Double>> getShotLineOnTarget(JSONObject problemObject) throws JSONException {
+		Set<Entry<Line2D.Double, Double>> listShot = new HashSet<>();
 		Set<Point2D.Double> listOpp = generateListOpp(problemObject);
 		Set<Entry<Point2D.Double, Point2D.Double>> listGoal = generateListGoal(problemObject);
 		double thetaStep = problemObject.getDouble("theta_step");
-		for (Point2D.Double opp : listOpp) 
-		{
-			
-			//Set<Double> listTheta = new HashSet<>();
-			for (Entry<Point2D.Double, Point2D.Double> goal : listGoal) 
-			{
+		for (Point2D.Double opp : listOpp) {
+
+			// Set<Double> listTheta = new HashSet<>();
+			for (Entry<Point2D.Double, Point2D.Double> goal : listGoal) {
 				double theta1 = getAngle(opp, goal.getKey());
 				double theta2 = getAngle(opp, goal.getValue());
 				double thetaMin, thetaMax;
-				//make the angle 
-				if(Math.abs(theta2-theta1) < Math.PI)
-				{
-					if (theta1 <= theta2) 
-					{
+				// make the angle
+				if (Math.abs(theta2 - theta1) < Math.PI) {
+					if (theta1 <= theta2) {
 						thetaMin = theta1;
 						thetaMax = theta2;
-					} 
-					else 
-					{
+					} else {
 						thetaMin = theta2;
 						thetaMax = theta1;
 					}
-					
-				}
-				else
-				{
-					if (theta1 <= theta2) 
-					{
-						thetaMin = theta2 - 2.0*Math.PI;
+
+				} else {
+					if (theta1 <= theta2) {
+						thetaMin = theta2 - 2.0 * Math.PI;
 						thetaMax = theta1;
-					} 
-					else 
-					{
-						thetaMin = theta1 - 2.0*Math.PI;
+					} else {
+						thetaMin = theta1 - 2.0 * Math.PI;
 						thetaMax = theta2;
 					}
-					
+
 				}
-				
-				
-				//System.out.println(opp + "::" + thetaMin + "," + thetaMax);
+
+				// System.out.println(opp + "::" + thetaMin + "," + thetaMax);
 
 				// check if the angle are good ones
-				for (double thetaK = thetaMin; thetaK  < thetaMax; thetaK += thetaStep) 
-				{
-					
+				for (double thetaK = thetaMin; thetaK < thetaMax; thetaK += thetaStep) {
+
 					Point2D.Double intersectionPoint = intersection(opp, thetaK, goal.getKey(), goal.getValue());
 					Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
 					listShot.add(new SimpleEntry<>(shotLine, thetaK));
-					
+
 				}
-			
-				/*for(double thetaK = -1.0*Math.PI;thetaK < Math.PI;thetaK += thetaStep )
-				{
-					Point2D.Double intersectionPoint = intersection(opp, thetaK, goal.getKey(), goal.getValue());
-					Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
-					listShot.add(new SimpleEntry<>(shotLine, thetaK));
-				}*/
-				/*for(Entry<Line2D.Double, Double> e : listShot)
-				{
-					System.out.println(e.getKey().getP1() + "," + e.getKey().getP2() + "::" + e.getValue());
-					
-				}
-				System.out.println();*/
+
+				/*
+				 * for(double thetaK = -1.0*Math.PI;thetaK < Math.PI;thetaK +=
+				 * thetaStep ) { Point2D.Double intersectionPoint =
+				 * intersection(opp, thetaK, goal.getKey(), goal.getValue());
+				 * Line2D.Double shotLine = new Line2D.Double(opp,
+				 * intersectionPoint); listShot.add(new SimpleEntry<>(shotLine,
+				 * thetaK)); }
+				 */
+				/*
+				 * for(Entry<Line2D.Double, Double> e : listShot) {
+				 * System.out.println(e.getKey().getP1() + "," +
+				 * e.getKey().getP2() + "::" + e.getValue());
+				 * 
+				 * } System.out.println();
+				 */
 			}
 		}
 
 		return listShot;
 	}
-	
-	
-	private Set<Entry<Line2D.Double,Double>> getShotLineOnTargetTest(JSONObject problemObject) throws JSONException 
-	{
-		Set<Entry<Line2D.Double,Double>> listShot = new HashSet<>();
+
+	private Set<Entry<Line2D.Double, Double>> getShotLineOnTargetTest(JSONObject problemObject) throws JSONException {
+		Set<Entry<Line2D.Double, Double>> listShot = new HashSet<>();
 		Set<Point2D.Double> listOpp = generateListOpp(problemObject);
 		Set<Entry<Point2D.Double, Point2D.Double>> listGoal = generateListGoal(problemObject);
 		double thetaStep = problemObject.getDouble("theta_step");
-		
-		
-		for (Point2D.Double opp : listOpp) 
-		{	
-			//Set<Entry<Double,Double>> listThetaMinMax = new HashSet<>();
-			Map<Entry<Point2D.Double,Point2D.Double>,Entry<Double,Double>> listThetaMinMax = new HashMap<>();
-			//Set<Double> listTheta = new HashSet<>();
-			for (Entry<Point2D.Double, Point2D.Double> goal : listGoal) 
-			{
-				
+
+		for (Point2D.Double opp : listOpp) {
+			// Set<Entry<Double,Double>> listThetaMinMax = new HashSet<>();
+			Map<Entry<Point2D.Double, Point2D.Double>, Entry<Double, Double>> listThetaMinMax = new HashMap<>();
+			// Set<Double> listTheta = new HashSet<>();
+			for (Entry<Point2D.Double, Point2D.Double> goal : listGoal) {
+
 				double theta1 = getAngle(opp, goal.getKey());
 				double theta2 = getAngle(opp, goal.getValue());
 				double thetaMin, thetaMax;
-				//make the angle 
-				if(Math.abs(theta2-theta1) < Math.PI)
-				{
-					if (theta1 <= theta2) 
-					{
+				// make the angle
+				if (Math.abs(theta2 - theta1) < Math.PI) {
+					if (theta1 <= theta2) {
 						thetaMin = theta1;
 						thetaMax = theta2;
-					} 
-					else 
-					{
+					} else {
 						thetaMin = theta2;
 						thetaMax = theta1;
 					}
-					
-				}
-				else
-				{
-					if (theta1 <= theta2) 
-					{
-						thetaMin = theta2 - 2.0*Math.PI;
+
+				} else {
+					if (theta1 <= theta2) {
+						thetaMin = theta2 - 2.0 * Math.PI;
 						thetaMax = theta1;
-					} 
-					else 
-					{
-						thetaMin = theta1 - 2.0*Math.PI;
+					} else {
+						thetaMin = theta1 - 2.0 * Math.PI;
 						thetaMax = theta2;
 					}
-					
+
 				}
-				listThetaMinMax.put(new SimpleEntry<>(goal.getKey(), goal.getValue()), new SimpleEntry<>(thetaMin, thetaMax));
+				listThetaMinMax.put(new SimpleEntry<>(goal.getKey(), goal.getValue()),
+						new SimpleEntry<>(thetaMin, thetaMax));
 			}
-			
-			for(double thetaK = -1.0*Math.PI;thetaK < Math.PI;thetaK += thetaStep )
-			{
-				for(Entry<Entry<Point2D.Double,Point2D.Double>,Entry<Double,Double>> goalAngle : listThetaMinMax.entrySet())
-				{
-					double thetaMin,thetaMax;
+
+			for (double thetaK = -1.0 * Math.PI; thetaK < Math.PI; thetaK += thetaStep) {
+				for (Entry<Entry<Point2D.Double, Point2D.Double>, Entry<Double, Double>> goalAngle : listThetaMinMax
+						.entrySet()) {
+					double thetaMin, thetaMax;
 					thetaMin = goalAngle.getValue().getKey();
 					thetaMax = goalAngle.getValue().getValue();
-					if(thetaK>= thetaMin && thetaK <= thetaMax)
-					{
-						Point2D.Double intersectionPoint = intersection(opp, thetaK, goalAngle.getKey().getKey(), goalAngle.getKey().getValue());
+					if (thetaK >= thetaMin && thetaK <= thetaMax) {
+						Point2D.Double intersectionPoint = intersection(opp, thetaK, goalAngle.getKey().getKey(),
+								goalAngle.getKey().getValue());
 						Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
 						listShot.add(new SimpleEntry<>(shotLine, thetaK));
 					}
-			
+
 				}
 
 			}
-			
+
 		}
 
 		return listShot;
@@ -305,34 +290,30 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 
 	// intersection point between a line passing through p with an angle of
 	// theta, and a line passing through p1 and p2
-	private Point2D.Double intersection(Point2D.Double p, double theta, Point2D.Double p1, Point2D.Double p2)
-	{
+	private Point2D.Double intersection(Point2D.Double p, double theta, Point2D.Double p1, Point2D.Double p2) {
 
 		// we first compute the cartesian equation for each line, then we solve
 		// the system
 		double a1, a2, b1, b2, c1, c2;
 
-		///TODO:need to check for theta=+-Pi/2
-		//shotline equation
-		a1 = -1.0*Math.tan(theta);
+		/// TODO:need to check for theta=+-Pi/2
+		// shotline equation
+		a1 = -1.0 * Math.tan(theta);
 		b1 = 1;
-		c1 = -1.0*a1*p.getX() - p.getY();
-		
-		//goal line equation
-		if (p1.getX() != p2.getX()) 
-		{
+		c1 = -1.0 * a1 * p.getX() - p.getY();
+
+		// goal line equation
+		if (p1.getX() != p2.getX()) {
 			a2 = 1.0;
-			b2 = -1.0*(p1.getY() - p2.getY()) / (p2.getX() - p1.getX());
+			b2 = -1.0 * (p1.getY() - p2.getY()) / (p2.getX() - p1.getX());
 			c2 = -1.0 * p1.getY() - b2 * p1.getX();
-		} 
-		else 
-		{
+		} else {
 			a2 = 1.0;
 			b2 = 0.0;
 			c2 = -1.0 * p1.getX();
 		}
-		System.out.println(p + "(" + theta + ")"  + "::" + a1 + "," + b1 + "," + c1 + "::" + a2 + "," + b2 + "," + c2);
-		
+		// System.out.println(p + "(" + theta + ")" + "::" + a1 + "," + b1 + ","
+		// + c1 + "::" + a2 + "," + b2 + "," + c2);
 
 		double x = (b1 * c2 - c1 * b2) / (a1 * b2 - b1 * a2);
 		double y = (c1 * a2 - a1 * c2) / (a1 * b2 - b1 * a2);
@@ -343,35 +324,25 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 
 	}
 
-	private double getAngle(Point2D.Double p1, Point2D.Double p2) 
-	{
+	private double getAngle(Point2D.Double p1, Point2D.Double p2) {
 		double theta = 0;
-		if (p1.getX() != p2.getX()) 
-		{
+		if (p1.getX() != p2.getX()) {
 			theta = Math.atan((p2.getY() - p1.getY()) / (p2.getX() - p1.getX()));
 			theta = theta % (2.0 * Math.PI);
-			if(theta <0) 
-			{
-				theta += 2.0*Math.PI;
+			if (theta < 0) {
+				theta += 2.0 * Math.PI;
 			}
-			if (p1.getX() > p2.getX()) 
-			{
+			if (p1.getX() > p2.getX()) {
 				theta += Math.PI;
 				theta = theta % (2.0 * Math.PI);
-				if(theta <0) 
-				{
-					theta += 2.0*Math.PI;
+				if (theta < 0) {
+					theta += 2.0 * Math.PI;
 				}
 			}
-		} 
-		else 
-		{
-			if (p2.getY() > p1.getY()) 
-			{
+		} else {
+			if (p2.getY() > p1.getY()) {
 				return Math.PI / 2.0;
-			} 
-			else 
-			{
+			} else {
 				return 3.0 * Math.PI / 2.0;
 			}
 
@@ -380,8 +351,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		return theta;
 	}
 
-	private Set<Point2D.Double> generateListOpp(JSONObject problemObject) throws JSONException 
-	{
+	private Set<Point2D.Double> generateListOpp(JSONObject problemObject) throws JSONException {
 		HashSet<Point2D.Double> listOpp = new HashSet<>();
 
 		JSONArray list = problemObject.getJSONArray("opponents");
@@ -395,8 +365,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		return listOpp;
 	}
 
-	private Set<Point2D.Double> generateList(JSONObject problemObject, String fieldName) throws JSONException 
-	{
+	private Set<Point2D.Double> generateList(JSONObject problemObject, String fieldName) throws JSONException {
 
 		HashSet<Point2D.Double> listOpp = new HashSet<>();
 
@@ -429,8 +398,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 		return result;
 	}
 
-	private Set<Point2D.Double> generatePointList(JSONObject problemObject) throws JSONException 
-	{
+	private Set<Point2D.Double> generatePointList(JSONObject problemObject) throws JSONException {
 		int precision = 100;
 		HashSet<Point2D.Double> listPoint = new HashSet<>();
 
@@ -461,50 +429,44 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge>
 
 		return listPoint;
 	}
-	
-	
-	public Set<RVertex> getPositionVertices()
-	{
+
+	public Set<RVertex> getPositionVertices() {
 		HashSet<RVertex> listPositionVertices = new HashSet<>();
 		Set<RVertex> listVertices = vertexSet();
-		for(RVertex v : listVertices)
-		{
-			if(v.is_goodGuy())
-			{
+		for (RVertex v : listVertices) {
+			if (v.is_goodGuy()) {
 				listPositionVertices.add(v);
 			}
 		}
-		
+
 		return listPositionVertices;
 	}
-	
-	public Set<RVertex> getGoalPosition()
-	{
+
+	public Set<RVertex> getGoalPosition() {
 		HashSet<RVertex> listPositionGoal = new HashSet<>();
 		Set<RVertex> vertices = vertexSet();
-		for(RVertex v : vertices)
-		{
-			if(v.is_goal())
-			{
+		for (RVertex v : vertices) {
+			if (v.is_goal()) {
 				listPositionGoal.add(v);
 			}
 		}
 		return listPositionGoal;
 	}
-	
-	public Set<RVertex> getShotLineVertices()
-	{
+
+	public Set<RVertex> getShotLineVertices() {
 		HashSet<RVertex> listPositionVertices = new HashSet<>();
 		Set<RVertex> listVertices = vertexSet();
-		for(RVertex v : listVertices)
-		{
-			if(!v.is_goodGuy())
-			{
+		for (RVertex v : listVertices) {
+			if (!v.is_goodGuy()) {
 				listPositionVertices.add(v);
 			}
 		}
-		
+
 		return listPositionVertices;
 	}
-	
+
+	public ArrayList<Point2D> getInitPosDefenders() {
+		return InitPosDefenders;
+	}
+
 }
