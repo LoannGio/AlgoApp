@@ -1,19 +1,8 @@
 package main;
 
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.io.Attribute;
-import org.jgrapht.io.AttributeType;
-import org.jgrapht.io.ComponentAttributeProvider;
-import org.jgrapht.io.ComponentNameProvider;
-import org.jgrapht.io.DOTExporter;
-import org.jgrapht.io.IntegerComponentNameProvider;
 import org.json.JSONException;
 
 public class Main {
@@ -25,23 +14,20 @@ public class Main {
 			return;
 		}
 		RGraph G = new RGraph(filepath, false);
-		
-		
 
-		// Test de smallestDominatingSet()
-		System.out.println("---Test de smallestDominatingSet()");
+		System.out.println("---Test de smallestDominatingSetBruteForcePosInit");
 		long time = System.currentTimeMillis();
-		/*Set<RVertex> solution =  Domination.smallestDominatingSetBruteForce(G, G.getShotLineVertices(),
-				G.getPositionVertices(), true);*/
-		//Set<RVertex> solution = Domination.dominatingSetGreedy(G, G.getShotLineVertices(), G.getPositionVertices());
-		Set<RVertex> defenders = G.getPositionVertices();
-		defenders.removeAll(G.getGoalPosition());
-		//Set<RVertex> solution = Domination.smallestDominatingSetBruteForceGoal(G, G.getGoalPosition(), defenders,G.getShotLineVertices(), false);
-		Set<RVertex> solution = Domination.dominatingSetGreedyGoal(G, G.getGoalPosition(), defenders, G.getShotLineVertices());
+		/*
+		 * Set<RVertex> solution =
+		 * Domination.smallestDominatingSetBruteForcePosInit(G,
+		 * G.getShotLineVertices(), G.getPositionVertices(),
+		 * G.getInitPosDefenders(), false);
+		 */
+
+		Set<RVertex> solution = Domination.dominatingSetGreedyPosInit(G, G.getShotLineVertices(),
+				G.getPositionVertices(), G.getInitPosDefenders());
 		time = System.currentTimeMillis() - time;
 		System.out.println("Duree de la generation de la solution (ms) : " + time);
 		JSonSolution.saveJSonSolution(solution);
-		System.out.println(solution);
-		//System.out.println(G.getPositionVertices());
 	}
 }

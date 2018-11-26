@@ -2,76 +2,63 @@ package main;
 
 import java.awt.geom.Point2D;
 
-import com.sun.xml.internal.bind.v2.runtime.RuntimeUtil.ToStringAdapter;
-
-
 //Class representing the vertices of the graph: characterized by a position (in the field), 
 //an angle if the vertex is a shotline vertex, and a bool that id true if the vertex is a
 //position vertex(ie a potential defender position)
 
-public class RVertex 
-{
-	
-	
-	public RVertex(java.awt.geom.Point2D _position, double _theta) 
-	{
+public class RVertex {
+
+	private Point2D _position;
+	private double _theta;
+	// private boolean _goodGuy;
+	private RVertexType _type;
+
+	public RVertex(java.awt.geom.Point2D _position, double _theta) {
 		this._position = _position;
 		this._theta = _theta;
-		//this._goodGuy = _goodGuy;
+		// this._goodGuy = _goodGuy;
 		this._type = RVertexType.BAD_GUY;
 	}
-	
-	public RVertex(java.awt.geom.Point2D _position, RVertexType _type) 
-	{
+
+	public RVertex(java.awt.geom.Point2D _position, RVertexType _type) {
 		this._position = _position;
-		//this._goodGuy = _goodGuy;
+		// this._goodGuy = _goodGuy;
 		this._theta = 0.0;
 		this._type = _type;
 	}
 
-
-	public double get_theta()
-	{
+	public double get_theta() {
 		return _theta;
 	}
-	
-	public Point2D get_position()
-	{
+
+	public Point2D get_position() {
 		return _position;
 	}
-	
-	public boolean is_goodGuy()
-	{
-		//return _goodGuy;
+
+	public boolean is_goodGuy() {
+		// return _goodGuy;
 		return (_type == RVertexType.GOOD_GUY || _type == RVertexType.GOAL_GUY);
-		
-	}
-	
-	public boolean is_goal()
-	{
-		return(_type == RVertexType.GOAL_GUY);
 
 	}
-	
-	/*public void set_goodGuy(boolean goodGuy)
-	{
-		_goodGuy = goodGuy;
-		
-	}*/
-	
 
-	public void set_position(Point2D.Double _position) 
-	{
+	public boolean is_goal() {
+		return (_type == RVertexType.GOAL_GUY);
+
+	}
+
+	/*
+	 * public void set_goodGuy(boolean goodGuy) { _goodGuy = goodGuy;
+	 * 
+	 * }
+	 */
+
+	public void set_position(Point2D.Double _position) {
 		this._position = _position;
 	}
 
-	public void set_theta(double _theta)
-	{
+	public void set_theta(double _theta) {
 		this._theta = _theta;
 	}
-	
-
-
 
 	public RVertexType get_type() {
 		return _type;
@@ -81,28 +68,16 @@ public class RVertex
 		this._type = _type;
 	}
 
-
-	
-	
 	@Override
 	public String toString() {
 		String str = "";
-		if(is_goodGuy())
-		{
-			str+="D:" + "[" + _position.getX() + "," + _position.getY() + "]";
-		}
-		else
-		{
-			str+="T:" + "[" + _position.getX() + "," + _position.getY() + "]" + "::"+_theta;
+		if (is_goodGuy()) {
+			str += "D:" + "[" + _position.getX() + "," + _position.getY() + "]";
+		} else {
+			str += "T:" + "[" + _position.getX() + "," + _position.getY() + "]" + "::" + _theta;
 		}
 		return str;
 	}
-
-
-
-
-
-
 
 	@Override
 	public int hashCode() {
@@ -136,17 +111,4 @@ public class RVertex
 			return false;
 		return true;
 	}
-
-
-
-
-
-
-
-	private Point2D _position;
-	private double _theta;
-	//private boolean _goodGuy;
-	private RVertexType _type;
-	
-	
 }
