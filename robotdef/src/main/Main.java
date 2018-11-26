@@ -12,7 +12,6 @@ public class Main {
 			System.out.println("File not found");
 			return;
 		}
-
 		// Select problem extansion
 		String[] extension = new String[1];
 		extension[0] = "Normal";

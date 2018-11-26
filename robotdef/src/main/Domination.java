@@ -49,7 +49,7 @@ public class Domination {
 		return true;
 	}
 
-	// Retourne un plus petit ensemble dominant (et indépendant si collisions =
+	// Retourne un plus petit ensemble dominant (et indï¿½pendant si collisions =
 	// true)
 	// d'un graphe (null si gamma(G) > 6)
 	public static <V, E> Set<V> smallestDominatingSetBruteForce(SimpleGraph<V, E> G, boolean collisions) {
@@ -58,7 +58,7 @@ public class Domination {
 
 	// Retourne un plus petit ensemble qui domine un sous-ensemble de sommets d
 	// d'un graphe (null si son cardinal est > 6) (si collisions = true : cet
-	// ensemble sera indépendant)
+	// ensemble sera indï¿½pendant)
 	public static <V, E> Set<V> smallestDominatingSetBruteForce(SimpleGraph<V, E> G, Set<V> dominated,
 			boolean collisions) {
 		return smallestDominatingSetBruteForce(G, dominated, G.vertexSet(), collisions);
@@ -68,7 +68,7 @@ public class Domination {
 	 * Retourne un plus petit ensemble qui domine un sous-ensemble de sommets
 	 * dominated d'un graphe (null si son cardinal est > 6) par un ensemble de
 	 * sommets dans dominating (si collisions = true : cet ensemble sera
-	 * indépendant)
+	 * indï¿½pendant)
 	 */
 	public static <V, E> Set<V> smallestDominatingSetBruteForce(SimpleGraph<V, E> G, Set<V> dominated,
 			Set<V> dominating, boolean collisions) {
@@ -85,20 +85,26 @@ public class Domination {
 	}
 
 	public static <V, E> Set<V> smallestDominatingSetBruteForceGoal(SimpleGraph<V, E> G, Set<V> dominated,
-			Set<V> dominatingGoal, Set<V> dominatingDefenser, boolean collisions) {
-		for (int i = 0; i <= 6; i++) {
-			for (Set<V> D : SubsetCreator.allSubsetsOfSizeNGoal(dominatingGoal, dominatingDefenser, i)) {
+			Set<V> dominatingGoal, Set<V> dominatingDefenser, boolean collisions) 
+	{
+		for (int i = 0; i <= 6; i++) 
+		{
+			for (Set<V> D : SubsetCreator.allSubsetsOfSizeNGoal(dominatingGoal, dominatingDefenser, i)) 
+			{
 				HashSet<V> unionDominating = new HashSet<V>(dominatingGoal);
 				unionDominating.addAll(new HashSet<V>(dominatingDefenser));
-				if (collisions) {
-					if (!Independance.isIndependent(G, unionDominating) && dominates(G, dominated, D))
+				if (collisions) 
+				{
+					System.out.println("collision:");
+					if (!Independance.isIndependent(G, unionDominating))
 						continue;
-				} else {
-					if (dominates(G, dominated, D))
-						return D;
-				}
+					
+				} 
+				if (dominates(G, dominated, D))
+					return D;
 			}
 		}
+		System.out.println("not ok2");
 		return null;
 	}
 
@@ -106,7 +112,7 @@ public class Domination {
 	 * Retourne un plus petit ensemble qui domine un sous-ensemble de sommets
 	 * dominated d'un graphe (null si son cardinal est > 6) par un ensemble de
 	 * sommets dans dominating (si collisions = true : cet ensemble sera
-	 * indépendant)
+	 * indï¿½pendant)
 	 */
 	public static <V, E> Set<V> smallestDominatingSetBruteForcePosInit(SimpleGraph<V, E> G, Set<V> dominated,
 			Set<V> dominating, ArrayList<Point2D> initPos, boolean collisions) {
@@ -156,7 +162,7 @@ public class Domination {
 		Set<V> dominatingCopy = new HashSet<V>(dominating);
 		SimpleGraph<V, E> GCopy = (SimpleGraph<V, E>) G.clone();
 		Set<V> D = new HashSet<V>();
-		for (int i = 1; i <= 6; i++) {
+		for (int i = 0; i <= 6; i++) {
 			V v = vertexOfHighestDegree(GCopy, dominatingCopy);
 			D.add(v);
 			Set<V> neighbors = Graphs.neighborSetOf(GCopy, v);
@@ -234,8 +240,8 @@ public class Domination {
 		Set<V> D = new HashSet<V>();
 
 		/*
-		 * On commence par ajouter le sommet sur la surface de réparation de
-		 * plus grand degré et on supprime tous ses voisins puis on fait comme
+		 * On commence par ajouter le sommet sur la surface de rï¿½paration de
+		 * plus grand degrï¿½ et on supprime tous ses voisins puis on fait comme
 		 * dans la version normale de dominatingSetGreedyGoal
 		 */
 		// Choix du Goal
@@ -251,7 +257,7 @@ public class Domination {
 		dominatingCopy.remove(v);
 		if (dominates(G, dominatedCopy, D))
 			return D;
-		// Choix des autres défenseurs
+		// Choix des autres dï¿½fenseurs
 		for (int i = 1; i <= 6; i++) {
 			v = vertexOfHighestDegree(GCopy, dominatingCopy);
 			D.add(v);
