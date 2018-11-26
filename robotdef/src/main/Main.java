@@ -14,6 +14,8 @@ public class Main {
 			return;
 		}
 		RGraph G = new RGraph(filepath, false);
+		
+		SATReduction.reduction(G, "reduction.txt");
 
 		System.out.println("---Test de smallestDominatingSetBruteForcePosInit");
 		long time = System.currentTimeMillis();
