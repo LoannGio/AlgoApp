@@ -20,6 +20,7 @@ public class SubsetCreator<V> {
 			tmp = new HashSet<HashSet<V>>();
 
 				tmp = allSubsetsOfSizeN(S, k - 1);
+				System.out.println("tmp::" + tmp.size());
 
 				// on ajoute le gardien � chaque solution trouvee
 				for (HashSet<V> subset : tmp) {
@@ -27,6 +28,12 @@ public class SubsetCreator<V> {
 					subsets.add(subset); // devrait marcher
 				}
 			}
+		
+		System.out.println("we have subsets:" + subsets.size());
+		for(Set<V> subset : subsets)
+		{
+			System.out.println("::" + subset.size() + subset);
+		}
 
 
 		

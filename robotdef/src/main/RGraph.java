@@ -21,13 +21,27 @@ import org.json.JSONObject;
 
 //class representing the model graph of the problem
 public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
+	
+	
+	
 	private ArrayList<Point2D> InitPosDefenders = new ArrayList<Point2D>();
+	
+	
+	
+	public RGraph(Class<? extends DefaultEdge> edgeClass) 
+	{
+		super(edgeClass);
+		// TODO Auto-generated constructor stub
+	}
+
+
 	// vertices are 3-uplets (position,theta,bool): shotline vertices are
 	// characterized by their position the angle of the shot and the bool is
 	// false;
 	// position vertices are characterized by their position, and the bool is
 	// true (the theat angla value is not used in this case.
 
+	
 	// constructor from JSON file
 	public RGraph(String filename, boolean collision) throws JSONException {
 		super(DefaultEdge.class);
@@ -397,6 +411,34 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 			e.printStackTrace();
 		}
 		return result;
+	}
+	
+	public static RGraph generateSimpleGraph(int nbDefenders,int nbShotlinnes,boolean dominable)
+	{
+		RGraph graph = new RGraph(DefaultEdge.class);
+		
+		for(int i = 0;i<nbDefenders;i++)
+		{
+			RVertex v = new RVertex(new Point2D.Double(new Double(i),new Double(i)), RVertexType.GOOD_GUY);
+			graph.addVertex(v);
+		}
+		for(int i = 0;i<nbShotlinnes;i++)
+		{
+			RVertex v = new RVertex(new Point2D.Double(new Double(i), new Double(i)), 1.0);
+			graph.addVertex(v);
+			if(i < nbShotlinnes-1 || dominable)
+			{
+				for(RVertex u : graph.vertexSet())
+				{
+					if(u.is_goodGuy())
+					{
+						graph.addEdge(u,v);
+					}
+				}
+			}
+		}
+		return graph;
+		
 	}
 
 	private Set<Point2D.Double> generatePointList(JSONObject problemObject) throws JSONException {
