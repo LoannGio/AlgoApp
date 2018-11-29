@@ -48,7 +48,7 @@ public class Domination {
 
 		return true;
 	}
-
+	
 	// Retourne un plus petit ensemble dominant (et ind�pendant si collisions
 	// =
 	// true)
@@ -92,10 +92,28 @@ public class Domination {
 			for (Set<V> D : SubsetCreator.allSubsetsOfSizeNGoal(dominatingGoal, dominatingDefenser, i)) {
 				if (collisions) {
 					if (!Independance.isIndependent(G, D))
+					{
+						System.out.println(D.size());
 						continue;
+					}
+						
 				}
 				if (dominates(G, dominated, D))
+				{
+					
 					return D;
+				}
+				else
+				{
+					
+					if(D.contains((Object)new RVertex(new Point2D.Double(4.3, 2.2),RVertexType.GOOD_GUY)) && 
+							D.contains((Object)new RVertex(new Point2D.Double(4.3, 0.8),RVertexType.GOAL_GUY)))
+					{
+						System.out.println(D);
+						dominates(G,dominated, D);
+					}
+				}
+					
 			}
 		}
 		return null;

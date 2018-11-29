@@ -54,7 +54,15 @@ public class FileHandler {
 				String name = "";
 				if(v.is_goodGuy())
 				{
-					name += "d(";
+					if(v.is_goal())
+					{
+						name +="g(";
+					}
+					else
+					{
+						name += "d(";
+					}
+					
 				}
 				else
 				{

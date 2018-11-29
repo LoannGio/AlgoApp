@@ -96,7 +96,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 			for (RVertex v1 : vertexSet()) {
 				for (RVertex v2 : vertexSet()) {
 					if (v1 != v2 && v1.is_goodGuy() && v2.is_goodGuy()
-							&& v1.get_position().distance(v2.get_position()) < 2.0 * robotRadius) {
+							&& v1.get_position().distance(v2.get_position()) <= 2.0 * robotRadius) {
 						addEdge(v1, v2);
 					}
 				}
