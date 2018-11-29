@@ -48,7 +48,7 @@ public class Domination {
 
 		return true;
 	}
-
+	
 	// Retourne un plus petit ensemble dominant (et ind�pendant si collisions
 	// =
 	// true)
@@ -75,8 +75,9 @@ public class Domination {
 			Set<V> dominating, boolean collisions) {
 		for (int i = 0; i <= 6; i++) {
 			for (Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i)) {
-				if (collisions && !Independance.isIndependent(G, dominating)) {
-					continue;
+				if (collisions) {
+					if (!Independance.isIndependent(G, D))
+						continue;
 				}
 				if (dominates(G, dominated, D))
 					return D;
@@ -87,17 +88,18 @@ public class Domination {
 
 	public static <V, E> Set<V> smallestDominatingSetBruteForceGoal(SimpleGraph<V, E> G, Set<V> dominated,
 			Set<V> dominatingGoal, Set<V> dominatingDefenser, boolean collisions) {
-		for (int i = 0; i <= 6; i++) {
-			for (Set<V> D : SubsetCreator.allSubsetsOfSizeNGoal(dominatingGoal, dominatingDefenser, i)) {
-				if (collisions) {
-					if (!Independance.isIndependent(G, D))
-						continue;
 
-				}
-				if (dominates(G, dominated, D))
-					return D;
+		 for (int i = 0; i <= 6; i++) {
+		for (Set<V> D : SubsetCreator.allSubsetsOfSizeNGoal(dominatingGoal, dominatingDefenser, i)) {
+			if (collisions) {
+				if (!Independance.isIndependent(G, D))
+					continue;
 			}
+			System.out.println(D);
+			if (dominates(G, dominated, D))
+				return D;
 		}
+		 }
 		return null;
 	}
 
@@ -114,7 +116,7 @@ public class Domination {
 		for (int i = 0; i <= initPos.size(); i++) {
 			HashSet<HashSet<V>> subsets = SubsetCreator.allSubsetsOfSizeN(dominating, i);
 			for (Set<V> D : subsets) {
-				if (collisions && !Independance.isIndependent(G, dominating)) {
+				if (collisions && !Independance.isIndependent(G, D)) {
 					continue;
 				}
 				if (dominates(G, dominated, D)) {
