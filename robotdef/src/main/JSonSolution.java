@@ -15,6 +15,8 @@ public class JSonSolution {
 		JSONObject object = generateJSONSolution(solution);
 
 		FileWriter fileWriter = null;
+
+		fileName = "solutions/" + fileName;
 		try {
 			fileWriter = new FileWriter(fileName);
 		} catch (IOException e) {

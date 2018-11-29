@@ -33,7 +33,7 @@ public class AlgoRunner {
 	private void runPosInit(RGraph G, Boolean collision) {
 		long time;
 		Set<RVertex> solution;
-		System.out.println("#MODE : Position Initiale");
+		System.out.println("#MODE : Position Initiale - Collision : " + collision);
 
 		// Greedy
 		System.out.println("---Greedy");
@@ -58,7 +58,7 @@ public class AlgoRunner {
 	private void runMultiGoal(RGraph G, Boolean collision) {
 		long time;
 		Set<RVertex> solution;
-		System.out.println("#MODE : MultiGoal");
+		System.out.println("#MODE : MultiGoal - Collision : " + collision);
 
 		// Greedy
 		System.out.println("---Greedy");
@@ -83,12 +83,12 @@ public class AlgoRunner {
 		Set<RVertex> solution;
 		Set<RVertex> defenders = G.getPositionVertices();
 		defenders.removeAll(G.getGoalPosition());
-		System.out.println("#MODE : GoalKeeper");
+		System.out.println("#MODE : GoalKeeper - Collision : " + collision);
 
 		// Greedy
 		System.out.println("---Greedy");
 		time = System.currentTimeMillis();
-		solution = Domination.dominatingSetGreedyGoal(G,G.getShotLineVertices(), G.getGoalPosition(), defenders, 
+		solution = Domination.dominatingSetGreedyGoal(G, G.getShotLineVertices(), G.getGoalPosition(), defenders,
 				collision);
 		time = System.currentTimeMillis() - time;
 		System.out.println("Duree de la generation de la solution (ms) : " + time);
@@ -108,7 +108,7 @@ public class AlgoRunner {
 	private void runNormal(RGraph G, Boolean collision) {
 		long time;
 		Set<RVertex> solution;
-		System.out.println("#MODE : Normal");
+		System.out.println("#MODE : Normal - Collision : " + collision);
 
 		// Greedy
 		System.out.println("---Greedy");
