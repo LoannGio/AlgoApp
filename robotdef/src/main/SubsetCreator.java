@@ -14,30 +14,18 @@ public class SubsetCreator<V> {
 		HashSet<HashSet<V>> subsets = new HashSet<HashSet<V>>();
 		HashSet<HashSet<V>> tmp;
 
-
 		// pour chaque position que peut prendre le goal
 		for (V v : Sgoal) {
 			tmp = new HashSet<HashSet<V>>();
 
-				tmp = allSubsetsOfSizeN(S, k - 1);
-				System.out.println("tmp::" + tmp.size());
+			tmp = allSubsetsOfSizeN(S, k - 1);
 
-				// on ajoute le gardien � chaque solution trouvee
-				for (HashSet<V> subset : tmp) {
-					subset.add(v);
-					subsets.add(subset); // devrait marcher
-				}
+			// on ajoute le gardien � chaque solution trouvee
+			for (HashSet<V> subset : tmp) {
+				subset.add(v);
+				subsets.add(subset); // devrait marcher
 			}
-		
-		System.out.println("we have subsets:" + subsets.size());
-		for(Set<V> subset : subsets)
-		{
-			System.out.println("::" + subset.size() + subset);
 		}
-
-
-		
-
 		return subsets;
 	}
 

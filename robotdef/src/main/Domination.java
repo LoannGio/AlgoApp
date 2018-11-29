@@ -75,8 +75,9 @@ public class Domination {
 			Set<V> dominating, boolean collisions) {
 		for (int i = 0; i <= 6; i++) {
 			for (Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i)) {
-				if (collisions && !Independance.isIndependent(G, dominating)) {
-					continue;
+				if (collisions) {
+					if (!Independance.isIndependent(G, D))
+						continue;
 				}
 				if (dominates(G, dominated, D))
 					return D;
@@ -92,7 +93,6 @@ public class Domination {
 				if (collisions) {
 					if (!Independance.isIndependent(G, D))
 						continue;
-
 				}
 				if (dominates(G, dominated, D))
 					return D;
@@ -114,7 +114,7 @@ public class Domination {
 		for (int i = 0; i <= initPos.size(); i++) {
 			HashSet<HashSet<V>> subsets = SubsetCreator.allSubsetsOfSizeN(dominating, i);
 			for (Set<V> D : subsets) {
-				if (collisions && !Independance.isIndependent(G, dominating)) {
+				if (collisions && !Independance.isIndependent(G, D)) {
 					continue;
 				}
 				if (dominates(G, dominated, D)) {

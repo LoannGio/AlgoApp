@@ -3,6 +3,8 @@ TP d'algorithme appliquée Fabien JACQUES, Loann GIOVANNANGELI, Jonathan NARBONI
 
 #TODO
 
+gérer les cas de non satisfaisabilité (connexe)
+
 Goalkeeper greedy pas "opti", bruteforce a revoir
 
 Algo Normal, greedy -> pas de collision
