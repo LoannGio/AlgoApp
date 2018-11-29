@@ -95,7 +95,6 @@ public class Domination {
 				unionDominating.addAll(new HashSet<V>(dominatingDefenser));
 				if (collisions) 
 				{
-					
 					if (!Independance.isIndependent(G, unionDominating))
 						continue;
 					
