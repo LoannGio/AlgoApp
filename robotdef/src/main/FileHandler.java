@@ -78,9 +78,10 @@ public class FileHandler {
 			@Override
 			public Map<String, Attribute> getComponentAttributes(RVertex v)
 			{
-				Map<String,Attribute> mapAttributes = new HashMap<>();
-				if(solution.contains(v))
+				Map<String,Attribute> mapAttributes = null;
+				if(solution != null && solution.contains(v))
 				{
+					mapAttributes = new HashMap<>();
 					mapAttributes.put("color", new Attribute()
 					{
 						@Override
