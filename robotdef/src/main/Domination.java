@@ -156,7 +156,7 @@ public class Domination {
 	 * (null si la m�thode gloutonne ne trouve pas de sous-ensemble de taille
 	 * <= 6
 	 */
-	public static <V, E> Set<V> dominatingSetGreedy(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating) {
+	public static <V, E> Set<V> dominatingSetGreedy(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating,boolean collision) {
 		Set<V> dominatedCopy = new HashSet<V>(dominated);
 		Set<V> dominatingCopy = new HashSet<V>(dominating);
 		SimpleGraph<V, E> GCopy = (SimpleGraph<V, E>) G.clone();
@@ -180,7 +180,7 @@ public class Domination {
 	}
 
 	public static <V, E> Set<V> dominatingSetGreedyPosInit(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating,
-			ArrayList<Point2D> initPos) {
+			ArrayList<Point2D> initPos,boolean collision) {
 		Set<V> dominatedCopy = new HashSet<V>(dominated);
 		Set<V> dominatingCopy = new HashSet<V>(dominating);
 		SimpleGraph<V, E> GCopy = (SimpleGraph<V, E>) G.clone();
@@ -219,7 +219,7 @@ public class Domination {
 	 * pas de sous-ensemble de taille <= 6
 	 */
 	public static <V, E> Set<V> dominatingSetGreedy(SimpleGraph<V, E> G, Set<V> dominated) {
-		return dominatingSetGreedy(G, dominated, G.vertexSet());
+		return dominatingSetGreedy(G, dominated, G.vertexSet(),true);
 	}
 
 	/*
@@ -230,8 +230,8 @@ public class Domination {
 		return dominatingSetGreedy(G, G.vertexSet());
 	}
 
-	public static <V, E> Set<V> dominatingSetGreedyGoal(SimpleGraph<V, E> G, Set<V> dominatingGoal, Set<V> dominating,
-			Set<V> dominated) {
+	public static <V, E> Set<V> dominatingSetGreedyGoal(SimpleGraph<V, E> G,Set<V> dominated, Set<V> dominatingGoal
+			, Set<V> dominating, boolean collision) {
 		Set<V> dominatedCopy = new HashSet<V>(dominated);
 		Set<V> dominatingCopy = new HashSet<V>(dominating);
 		// dominatingCopy contient tous les sommets potentiellement dominant

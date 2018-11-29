@@ -88,7 +88,7 @@ public class AlgoRunner {
 		// Greedy
 		System.out.println("---Greedy");
 		time = System.currentTimeMillis();
-		solution = Domination.dominatingSetGreedyGoal(G, G.getGoalPosition(), defenders, G.getShotLineVertices(),
+		solution = Domination.dominatingSetGreedyGoal(G,G.getShotLineVertices(), G.getGoalPosition(), defenders, 
 				collision);
 		time = System.currentTimeMillis() - time;
 		System.out.println("Duree de la generation de la solution (ms) : " + time);
