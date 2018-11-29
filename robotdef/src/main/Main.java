@@ -1,6 +1,7 @@
 package main;
 
 import java.io.FileNotFoundException;
+import java.util.HashSet;
 
 import org.json.JSONException;
 
@@ -12,7 +13,7 @@ public class Main {
 			System.out.println("File not found");
 			return;
 		}
-		// Select problem extansion
+		// Select problem extension
 		String[] extension = new String[1];
 		extension[0] = "Normal";
 		Boolean[] collision = new Boolean[1];
@@ -24,5 +25,10 @@ public class Main {
 
 		// Run algo
 		new AlgoRunner(G, extension[0], collision[0]);
+		
+		// Test SAT
+		RGraph SimpleG = RGraph.generateSimpleGraph(4, 2, true);
+		FileHandler.saveToDot(SimpleG, new HashSet<>(), "SimpleG.dot");
+		SATReduction.reduction(SimpleG, 0, "satreduction");
 	}
 }
