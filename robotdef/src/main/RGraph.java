@@ -7,9 +7,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -21,19 +19,13 @@ import org.json.JSONObject;
 
 //class representing the model graph of the problem
 public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
-	
-	
-	
+
 	private ArrayList<Point2D> InitPosDefenders = new ArrayList<Point2D>();
-	
-	
-	
-	public RGraph(Class<? extends DefaultEdge> edgeClass) 
-	{
+
+	public RGraph(Class<? extends DefaultEdge> edgeClass) {
 		super(edgeClass);
 		// TODO Auto-generated constructor stub
 	}
-
 
 	// vertices are 3-uplets (position,theta,bool): shotline vertices are
 	// characterized by their position the angle of the shot and the bool is
@@ -41,7 +33,6 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 	// position vertices are characterized by their position, and the bool is
 	// true (the theat angla value is not used in this case.
 
-	
 	// constructor from JSON file
 	public RGraph(String filename, boolean collision) throws JSONException {
 		super(DefaultEdge.class);
@@ -61,7 +52,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 		}
 		double robotRadius = getRobotRadius(problemObject);
 		Rectangle2D.Double goalArea;
-		
+
 		goalArea = getGoalArea(problemObject);
 
 		for (Entry<Line2D.Double, Double> line : listShotLine) {
@@ -75,11 +66,7 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 				if (line.getKey().ptSegDist(pos) < robotRadius
 						&& pos.distance(line.getKey().getP1()) > 2.0 * robotRadius) {
 					RVertex v;
-					if (goalArea.contains(pos)) // check if the vertex
-												// posisytion is in the goal
-												// area: if it is the case, the
-												// vertex is considered goal
-					{
+					if (goalArea.contains(pos)) {
 						v = new RVertex(pos, RVertexType.GOAL_GUY);
 					} else {
 						v = new RVertex(pos, RVertexType.GOOD_GUY);
@@ -126,8 +113,6 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 				Point2D defenderPos = new Point2D.Double(array.getDouble(0), array.getDouble(1));
 				InitPosDefenders.add(defenderPos);
 			}
-			System.out.println("---Load init pos");
-			System.out.println(InitPosDefenders);
 		} catch (JSONException je) {
 
 		}
@@ -242,67 +227,6 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 		return listShot;
 	}
 
-	private Set<Entry<Line2D.Double, Double>> getShotLineOnTargetTest(JSONObject problemObject) throws JSONException {
-		Set<Entry<Line2D.Double, Double>> listShot = new HashSet<>();
-		Set<Point2D.Double> listOpp = generateListOpp(problemObject);
-		Set<Entry<Point2D.Double, Point2D.Double>> listGoal = generateListGoal(problemObject);
-		double thetaStep = problemObject.getDouble("theta_step");
-
-		for (Point2D.Double opp : listOpp) {
-			// Set<Entry<Double,Double>> listThetaMinMax = new HashSet<>();
-			Map<Entry<Point2D.Double, Point2D.Double>, Entry<Double, Double>> listThetaMinMax = new HashMap<>();
-			// Set<Double> listTheta = new HashSet<>();
-			for (Entry<Point2D.Double, Point2D.Double> goal : listGoal) {
-
-				double theta1 = getAngle(opp, goal.getKey());
-				double theta2 = getAngle(opp, goal.getValue());
-				double thetaMin, thetaMax;
-				// make the angle
-				if (Math.abs(theta2 - theta1) < Math.PI) {
-					if (theta1 <= theta2) {
-						thetaMin = theta1;
-						thetaMax = theta2;
-					} else {
-						thetaMin = theta2;
-						thetaMax = theta1;
-					}
-
-				} else {
-					if (theta1 <= theta2) {
-						thetaMin = theta2 - 2.0 * Math.PI;
-						thetaMax = theta1;
-					} else {
-						thetaMin = theta1 - 2.0 * Math.PI;
-						thetaMax = theta2;
-					}
-
-				}
-				listThetaMinMax.put(new SimpleEntry<>(goal.getKey(), goal.getValue()),
-						new SimpleEntry<>(thetaMin, thetaMax));
-			}
-
-			for (double thetaK = -1.0 * Math.PI; thetaK < Math.PI; thetaK += thetaStep) {
-				for (Entry<Entry<Point2D.Double, Point2D.Double>, Entry<Double, Double>> goalAngle : listThetaMinMax
-						.entrySet()) {
-					double thetaMin, thetaMax;
-					thetaMin = goalAngle.getValue().getKey();
-					thetaMax = goalAngle.getValue().getValue();
-					if (thetaK >= thetaMin && thetaK <= thetaMax) {
-						Point2D.Double intersectionPoint = intersection(opp, thetaK, goalAngle.getKey().getKey(),
-								goalAngle.getKey().getValue());
-						Line2D.Double shotLine = new Line2D.Double(opp, intersectionPoint);
-						listShot.add(new SimpleEntry<>(shotLine, thetaK));
-					}
-
-				}
-
-			}
-
-		}
-
-		return listShot;
-	}
-
 	// intersection point between a line passing through p with an angle of
 	// theta, and a line passing through p1 and p2
 	private Point2D.Double intersection(Point2D.Double p, double theta, Point2D.Double p1, Point2D.Double p2) {
@@ -380,22 +304,6 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 		return listOpp;
 	}
 
-	private Set<Point2D.Double> generateList(JSONObject problemObject, String fieldName) throws JSONException {
-
-		HashSet<Point2D.Double> listOpp = new HashSet<>();
-
-		JSONArray list = problemObject.getJSONArray(fieldName);
-
-		for (int i = 0; i < list.length(); i++) {
-			JSONArray pair = list.getJSONArray(i);
-
-			listOpp.add(new Point2D.Double(pair.getDouble(0), pair.getDouble(1)));
-
-		}
-		return listOpp;
-
-	}
-
 	public static String readFile(String filename) {
 		String result = "";
 		try {
@@ -412,33 +320,27 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 		}
 		return result;
 	}
-	
-	public static RGraph generateSimpleGraph(int nbDefenders,int nbShotlinnes,boolean dominable)
-	{
+
+	public static RGraph generateSimpleGraph(int nbDefenders, int nbShotlinnes, boolean dominable) {
 		RGraph graph = new RGraph(DefaultEdge.class);
-		
-		for(int i = 0;i<nbDefenders;i++)
-		{
-			RVertex v = new RVertex(new Point2D.Double(new Double(i),new Double(i)), RVertexType.GOOD_GUY);
+
+		for (int i = 0; i < nbDefenders; i++) {
+			RVertex v = new RVertex(new Point2D.Double(new Double(i), new Double(i)), RVertexType.GOOD_GUY);
 			graph.addVertex(v);
 		}
-		for(int i = 0;i<nbShotlinnes;i++)
-		{
+		for (int i = 0; i < nbShotlinnes; i++) {
 			RVertex v = new RVertex(new Point2D.Double(new Double(i), new Double(i)), 1.0);
 			graph.addVertex(v);
-			if(i < nbShotlinnes-1 || dominable)
-			{
-				for(RVertex u : graph.vertexSet())
-				{
-					if(u.is_goodGuy())
-					{
-						graph.addEdge(u,v);
+			if (i < nbShotlinnes - 1 || dominable) {
+				for (RVertex u : graph.vertexSet()) {
+					if (u.is_goodGuy()) {
+						graph.addEdge(u, v);
 					}
 				}
 			}
 		}
 		return graph;
-		
+
 	}
 
 	private Set<Point2D.Double> generatePointList(JSONObject problemObject) throws JSONException {

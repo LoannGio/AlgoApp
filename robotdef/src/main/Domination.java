@@ -88,34 +88,18 @@ public class Domination {
 
 	public static <V, E> Set<V> smallestDominatingSetBruteForceGoal(SimpleGraph<V, E> G, Set<V> dominated,
 			Set<V> dominatingGoal, Set<V> dominatingDefenser, boolean collisions) {
-		for (int i = 0; i <= 6; i++) {
-			for (Set<V> D : SubsetCreator.allSubsetsOfSizeNGoal(dominatingGoal, dominatingDefenser, i)) {
-				if (collisions) {
-					if (!Independance.isIndependent(G, D))
-					{
-						System.out.println(D.size());
-						continue;
-					}
-						
-				}
-				if (dominates(G, dominated, D))
-				{
-					
-					return D;
-				}
-				else
-				{
-					
-					if(D.contains((Object)new RVertex(new Point2D.Double(4.3, 2.2),RVertexType.GOOD_GUY)) && 
-							D.contains((Object)new RVertex(new Point2D.Double(4.3, 0.8),RVertexType.GOAL_GUY)))
-					{
-						System.out.println(D);
-						dominates(G,dominated, D);
-					}
-				}
-					
+
+		 for (int i = 0; i <= 6; i++) {
+		for (Set<V> D : SubsetCreator.allSubsetsOfSizeNGoal(dominatingGoal, dominatingDefenser, i)) {
+			if (collisions) {
+				if (!Independance.isIndependent(G, D))
+					continue;
 			}
+			System.out.println(D);
+			if (dominates(G, dominated, D))
+				return D;
 		}
+		 }
 		return null;
 	}
 
