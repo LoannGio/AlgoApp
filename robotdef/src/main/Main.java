@@ -1,6 +1,7 @@
 package main;
 
 import java.io.FileNotFoundException;
+import java.util.HashSet;
 
 import org.json.JSONException;
 
@@ -24,5 +25,7 @@ public class Main {
 
 		// Run algo
 		new AlgoRunner(G, extension[0], collision[0]);
+		
+
 	}
 }
