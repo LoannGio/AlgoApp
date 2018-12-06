@@ -24,7 +24,7 @@ public class ExtensionChooserFrame extends JDialog {
 
 	public ExtensionChooserFrame(String[] ext, Boolean[] col, String title) {
 		super(new JFrame(), title, true);
-		setBounds(100, 100, 100, 250);
+		setBounds(100, 100, 100, 300);
 		setLocationRelativeTo(null);
 		setLayout(new FlowLayout());
 		extension = ext;
@@ -65,6 +65,8 @@ public class ExtensionChooserFrame extends JDialog {
 		group.add(goalBtn);
 		group.add(multiBtn);
 		group.add(posInitBtn);
+		group.add(SATBtn);
+		group.add(allBtn);
 
 		add(normalBtn);
 		add(goalBtn);

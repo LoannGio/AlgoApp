@@ -1,5 +1,8 @@
 package main;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Set;
 
 public class AlgoRunner {
@@ -28,16 +31,42 @@ public class AlgoRunner {
 
 	private void runSAT(RGraph G, Boolean collision) {
 		long time;
-		Set<RVertex> solution;
+		Boolean solFound = false;
+		String out = "solutions/SATresult";
+		String formula = "solutions/SATformula";
+		String glucosePath = "../glucose-syrup-4.1/simp/glucose";
 		System.out.println("#MODE : SAT - Collision : " + collision);
 
 		time = System.currentTimeMillis();
 		for (int i = 0; i <= 6; i++) {
-			SATReduction.reduction(G, i, "SATformula");
-
+			SATReduction.reduction(G, i, formula);
+			Runtime rt = Runtime.getRuntime();
+			try {
+				Process pr = rt.exec(glucosePath + " " + formula + " > " + out);
+				// READ
+				BufferedReader reader;
+				reader = new BufferedReader(new FileReader(out));
+				String line = reader.readLine();
+				while (line != null) {
+					System.out.println(line);
+					line = reader.readLine();
+				}
+				// Here, line = last line of file
+				if (line == "s SATISFIABLE") {
+					solFound = true;
+					break;
+				}
+				reader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		time = System.currentTimeMillis() - time;
 		System.out.println("Duree de la generation de la solution (ms) : " + time);
+		if (solFound)
+			System.out.println("Solution trouvée, stockee dans fichier : " + out);
+		else
+			System.out.println("Pas de solution");
 	}
 
 	private void runAll(RGraph G, Boolean collision) {
