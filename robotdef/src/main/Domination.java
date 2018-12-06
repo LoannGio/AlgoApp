@@ -72,7 +72,13 @@ public class Domination {
 	 * ind�pendant)
 	 */
 	public static <V, E> Set<V> smallestDominatingSetBruteForce(SimpleGraph<V, E> G, Set<V> dominated,
-			Set<V> dominating, boolean collisions) {
+			Set<V> dominating, boolean collisions) 
+	{
+		if(!isDominable(G))
+		{
+			return null;
+		}
+			
 		for (int i = 0; i <= 6; i++) {
 			for (Set<V> D : SubsetCreator.allSubsetsOfSizeN(dominating, i)) {
 				if (collisions) {
@@ -88,6 +94,10 @@ public class Domination {
 
 	public static <V, E> Set<V> smallestDominatingSetBruteForceGoal(SimpleGraph<V, E> G, Set<V> dominated,
 			Set<V> dominatingGoal, Set<V> dominatingDefenser, boolean collisions) {
+		if(!isDominable(G))
+		{
+			return null;
+		}
 
 		 for (int i = 0; i <= 6; i++) {
 		for (Set<V> D : SubsetCreator.allSubsetsOfSizeNGoal(dominatingGoal, dominatingDefenser, i)) {
@@ -111,6 +121,10 @@ public class Domination {
 	 */
 	public static <V, E> Set<V> smallestDominatingSetBruteForcePosInit(SimpleGraph<V, E> G, Set<V> dominated,
 			Set<V> dominating, ArrayList<Point2D> initPos, boolean collisions) {
+		if(!isDominable(G))
+		{
+			return null;
+		}
 		double distMaxMin = Integer.MAX_VALUE;
 		ArrayList<V> bestPermutation = new ArrayList<V>();
 		for (int i = 0; i <= initPos.size(); i++) {
@@ -134,6 +148,21 @@ public class Domination {
 		return new HashSet<V>(bestPermutation);
 	}
 
+	private static <V,E> boolean isDominable(SimpleGraph<V, E> G) {
+		if(G.getClass().equals(RGraph.class))
+		{
+			if(((RGraph)G).isDominable())
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
 	private static <V, E> double SmallestLongestDistance(ArrayList<V> permutation, ArrayList<Point2D> initPos) {
 		double distMaxMin = Integer.MAX_VALUE;
 		for (int i = 0; i < permutation.size() - 1; i++) {
@@ -154,6 +183,10 @@ public class Domination {
 	 */
 	public static <V, E> Set<V> dominatingSetGreedy(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating,
 			boolean collision) {
+		if(!isDominable(G))
+		{
+			return null;
+		}
 		Set<V> dominatedCopy = new HashSet<V>(dominated);
 		Set<V> dominatingCopy = new HashSet<V>(dominating);
 		SimpleGraph<V, E> GCopy = (SimpleGraph<V, E>) G.clone();
@@ -229,6 +262,10 @@ public class Domination {
 
 	public static <V, E> Set<V> dominatingSetGreedyGoal(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominatingGoal,
 			Set<V> dominating, boolean collision) {
+		if(!isDominable(G))
+		{
+			return null;
+		}
 		Set<V> dominatedCopy = new HashSet<V>(dominated);
 		Set<V> dominatingCopy = new HashSet<V>(dominating);
 		// dominatingCopy contient tous les sommets potentiellement dominant
