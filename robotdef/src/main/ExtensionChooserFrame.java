@@ -24,7 +24,7 @@ public class ExtensionChooserFrame extends JDialog {
 
 	public ExtensionChooserFrame(String[] ext, Boolean[] col, String title) {
 		super(new JFrame(), title, true);
-		setBounds(100, 100, 100, 250);
+		setBounds(100, 100, 100, 300);
 		setLocationRelativeTo(null);
 		setLayout(new FlowLayout());
 		extension = ext;
@@ -53,6 +53,10 @@ public class ExtensionChooserFrame extends JDialog {
 		goalBtn.setMnemonic(KeyEvent.VK_I);
 		goalBtn.setActionCommand("PosInit");
 
+		JRadioButton SATBtn = new JRadioButton("SAT");
+		SATBtn.setMnemonic(KeyEvent.VK_S);
+		SATBtn.setActionCommand("SAT");
+
 		JRadioButton allBtn = new JRadioButton("All");
 		goalBtn.setMnemonic(KeyEvent.VK_A);
 		goalBtn.setActionCommand("All");
@@ -61,11 +65,14 @@ public class ExtensionChooserFrame extends JDialog {
 		group.add(goalBtn);
 		group.add(multiBtn);
 		group.add(posInitBtn);
+		group.add(SATBtn);
+		group.add(allBtn);
 
 		add(normalBtn);
 		add(goalBtn);
 		add(multiBtn);
 		add(posInitBtn);
+		add(SATBtn);
 		add(allBtn);
 		add(collisionCB);
 		submit.addActionListener(new ActionListener() {
@@ -80,6 +87,8 @@ public class ExtensionChooserFrame extends JDialog {
 					extension[0] = multiBtn.getText();
 				} else if (posInitBtn.isSelected()) {
 					extension[0] = posInitBtn.getText();
+				} else if (SATBtn.isSelected()) {
+					extension[0] = SATBtn.getText();
 				} else if (allBtn.isSelected()) {
 					extension[0] = allBtn.getText();
 				}

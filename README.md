@@ -5,7 +5,7 @@ TP d'algorithme appliquée Fabien JACQUES, Loann GIOVANNANGELI, Jonathan NARBONI
 
 gérer les cas de non satisfaisabilité (connexe)
 
-Goalkeeper greedy pas "opti", bruteforce a revoir
+Goalkeeper greedy pas "opti" ?
 
 TODO du fichier Rgraph > intersection
 
