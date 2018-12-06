@@ -99,6 +99,21 @@ public class RGraph extends SimpleGraph<RVertex, DefaultEdge> {
 		 */
 		loadInitPosDefenders(problemObject);
 	}
+	
+	public boolean isDominable()
+	{
+		
+		Set<RVertex> listShotLines = getShotLineVertices();
+		for(RVertex v : listShotLines)
+		{
+			if(this.degreeOf(v) == 0)
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
 
 	private void loadInitPosDefenders(JSONObject problemObject) throws JSONException {
 		try {
