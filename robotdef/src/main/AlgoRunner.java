@@ -18,9 +18,26 @@ public class AlgoRunner {
 		case "PosInit":
 			runPosInit(G, collision);
 			break;
+		case "SAT":
+			runSAT(G, collision);
+			break;
 		case "All":
 			runAll(G, collision);
 		}
+	}
+
+	private void runSAT(RGraph G, Boolean collision) {
+		long time;
+		Set<RVertex> solution;
+		System.out.println("#MODE : SAT - Collision : " + collision);
+
+		time = System.currentTimeMillis();
+		for (int i = 0; i <= 6; i++) {
+			SATReduction.reduction(G, i, "SATformula");
+
+		}
+		time = System.currentTimeMillis() - time;
+		System.out.println("Duree de la generation de la solution (ms) : " + time);
 	}
 
 	private void runAll(RGraph G, Boolean collision) {
@@ -28,6 +45,7 @@ public class AlgoRunner {
 		runGoalKeeper(G, collision);
 		runMultiGoal(G, collision);
 		runPosInit(G, collision);
+		runSAT(G, collision);
 	}
 
 	private void runPosInit(RGraph G, Boolean collision) {

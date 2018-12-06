@@ -53,6 +53,10 @@ public class ExtensionChooserFrame extends JDialog {
 		goalBtn.setMnemonic(KeyEvent.VK_I);
 		goalBtn.setActionCommand("PosInit");
 
+		JRadioButton SATBtn = new JRadioButton("SAT");
+		SATBtn.setMnemonic(KeyEvent.VK_S);
+		SATBtn.setActionCommand("SAT");
+
 		JRadioButton allBtn = new JRadioButton("All");
 		goalBtn.setMnemonic(KeyEvent.VK_A);
 		goalBtn.setActionCommand("All");
@@ -66,6 +70,7 @@ public class ExtensionChooserFrame extends JDialog {
 		add(goalBtn);
 		add(multiBtn);
 		add(posInitBtn);
+		add(SATBtn);
 		add(allBtn);
 		add(collisionCB);
 		submit.addActionListener(new ActionListener() {
@@ -80,6 +85,8 @@ public class ExtensionChooserFrame extends JDialog {
 					extension[0] = multiBtn.getText();
 				} else if (posInitBtn.isSelected()) {
 					extension[0] = posInitBtn.getText();
+				} else if (SATBtn.isSelected()) {
+					extension[0] = SATBtn.getText();
 				} else if (allBtn.isSelected()) {
 					extension[0] = allBtn.getText();
 				}
