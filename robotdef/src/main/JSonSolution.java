@@ -11,6 +11,11 @@ import org.json.JSONObject;
 public class JSonSolution {
 
 	public static void saveJSonSolution(Set<RVertex> solution, String fileName) {
+		if(solution == null)
+		{
+			System.out.println("Pas de solution au probleme.");
+			return;
+		}
 
 		JSONObject object = generateJSONSolution(solution);
 

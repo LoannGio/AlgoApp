@@ -127,7 +127,7 @@ public class Domination {
 		}
 		double distMaxMin = Integer.MAX_VALUE;
 		ArrayList<V> bestPermutation = new ArrayList<V>();
-		for (int i = 0; i <= initPos.size(); i++) {
+		for (int i = 1; i < initPos.size()+1; i++) {
 			HashSet<HashSet<V>> subsets = SubsetCreator.allSubsetsOfSizeN(dominating, i);
 			for (Set<V> D : subsets) {
 				if (collisions && !Independance.isIndependent(G, D)) {
@@ -165,7 +165,7 @@ public class Domination {
 
 	private static <V, E> double SmallestLongestDistance(ArrayList<V> permutation, ArrayList<Point2D> initPos) {
 		double distMaxMin = Integer.MAX_VALUE;
-		for (int i = 0; i < permutation.size() - 1; i++) {
+		for (int i = 0; i < permutation.size() /*- 1*/; i++) {
 			RVertex vertex = (RVertex) permutation.get(i);
 			double dist = Math.sqrt(Math.pow(vertex.get_position().getY() - initPos.get(i).getY(), 2)
 					+ Math.pow(vertex.get_position().getX() - initPos.get(i).getX(), 2));
@@ -195,6 +195,11 @@ public class Domination {
 			V v = vertexOfHighestDegree(GCopy, dominatingCopy);
 			D.add(v);
 			Set<V> neighbors = Graphs.neighborSetOf(GCopy, v);
+			if(!collision)
+			{
+				if(v.getClass().equals(RVertex.class))
+					removePositionVertices((Set<RVertex>)neighbors);
+			}
 			GCopy.removeAllVertices(neighbors);
 			dominatedCopy.removeAll(neighbors);
 			dominatingCopy.removeAll(neighbors);
@@ -221,6 +226,11 @@ public class Domination {
 			V v = vertexOfHighestDegree(GCopy, dominatingCopy);
 			D.add(v);
 			Set<V> neighbors = Graphs.neighborSetOf(GCopy, v);
+			if(!collision)
+			{
+				if(v.getClass().equals(RVertex.class))
+					removePositionVertices((Set<RVertex>)neighbors);
+			}
 			GCopy.removeAllVertices(neighbors);
 			dominatedCopy.removeAll(neighbors);
 			dominatingCopy.removeAll(neighbors);
@@ -285,6 +295,11 @@ public class Domination {
 		GCopy.removeAllVertices(neighbors);
 		dominatedCopy.removeAll(neighbors);
 		dominatingCopy.removeAll(neighbors);
+		if(!collision)
+		{
+			if(v.getClass().equals(RVertex.class))
+				removePositionVertices((Set<RVertex>)neighbors);
+		}
 		GCopy.removeVertex(v);
 		dominatedCopy.remove(v);
 		dominatingCopy.remove(v);
@@ -320,5 +335,18 @@ public class Domination {
 		}
 
 		return res;
+	}
+	
+	
+	
+	private static void removePositionVertices(Set<RVertex> neighbors)
+	{
+		for(RVertex v : neighbors)
+		{
+			if (v.is_goodGuy())
+			{
+				neighbors.remove(v);
+			}
+		}
 	}
 }
