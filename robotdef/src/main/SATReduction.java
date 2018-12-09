@@ -45,18 +45,39 @@ public class SATReduction {
 		//CARDINAL
 		String cardinalClauses = "";
 		int nbCardinalClauses = 0;
-		for (HashSet<RVertex> I : SubsetCreator.allSubsetsOfSizeN(new HashSet<RVertex>(position), cardinal+1)) {
+		for (int i = 1; i <= position.size(); i++)
+		{
 			String clause = "";
-			for (RVertex v : I) {
-				clause += Integer.toString(-(position.indexOf(v) + 1)) + " ";
+			clause += Integer.toString(-i) + " ";
+			for (int g = 1; g <= cardinal; g++)
+			{
+				clause += Integer.toString(getVarNumberT(g, i, cardinal, position.size())) + " ";
 			}
 			cardinalClauses += clause;
 			cardinalClauses += "0\n";
 			nbCardinalClauses++;
+			
+			for(int g = 1; g <= cardinal; g++)
+			{
+				for(int j = 1; j <= Integer.toBinaryString(position.size()).length(); j++)
+				{
+					clause = "";
+					clause += Integer.toString(- getVarNumberT(g, i, cardinal, position.size())) + " ";
+					clause += Integer.toString(phiFunction(i, g, j, cardinal, position.size()));
+					cardinalClauses += clause;
+					cardinalClauses += " 0\n";
+					nbCardinalClauses++;
+				}
+			}
 		}
 		
+		
+		
 		//Première ligne
-		String init = "p cnf " + position.size() + " " + (shotLine.size()+nbCardinalClauses) + " \n";
+		String init = "p cnf " + 
+				(position.size() + cardinal * position.size() 
+				+ cardinal * Integer.toBinaryString(position.size()).length()) 
+				+ " " + (shotLine.size()+nbCardinalClauses) + " \n";
 		
 				
 		try {
@@ -81,6 +102,27 @@ public class SATReduction {
 			}
 		}
 		return true;
+	}
+	
+	private static int getVarNumberT(int x, int y, int k, int n)
+	{
+		return n + x + (y-1) * k;
+	}
+	
+	private static int getVarNumberB(int x, int y, int k, int n) {
+		return n + k*n + x + (y-1) * k;
+	}
+	
+	private static int phiFunction(int i, int g, int j, int k, int n) {
+		int logn = Integer.toBinaryString(n).length();
+		String si = Integer.toBinaryString(i);
+		while(si.length() < logn)
+			si = "0" + si;
+			
+		if (si.charAt(j-1) == '1')
+			return getVarNumberB(g, j, k, n);
+		else
+			return -getVarNumberB(g, j, k, n);
 	}
 	
 }
