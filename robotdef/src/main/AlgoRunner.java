@@ -1,6 +1,7 @@
 package main;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Set;
@@ -32,9 +33,9 @@ public class AlgoRunner {
 	private void runSAT(RGraph G, Boolean collision) {
 		long time;
 		Boolean solFound = false;
-		String out = "solutions/SATresult";
-		String formula = "solutions/SATformula";
-		String glucosePath = "../glucose-syrup-4.1/simp/glucose";
+		String out = "SATresult";
+		String formula = "SATformula";
+		String glucoseCmd = "glucose-syrup-4.1/simp/glucose";
 		System.out.println("#MODE : SAT - Collision : " + collision);
 
 		time = System.currentTimeMillis();
@@ -42,17 +43,26 @@ public class AlgoRunner {
 			SATReduction.reduction(G, i, formula);
 			Runtime rt = Runtime.getRuntime();
 			try {
-				Process pr = rt.exec(glucosePath + " " + formula + " > " + out);
+				ProcessBuilder pb = new ProcessBuilder(glucoseCmd, formula);
+				pb.redirectOutput(new File(out));
+				pb.redirectErrorStream(true);
+				Process pr = pb.start();				
+				try {
+					pr.waitFor();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				// READ
-				BufferedReader reader;
-				reader = new BufferedReader(new FileReader(out));
+				BufferedReader reader = new BufferedReader(new FileReader(out));
+				String lastLine = "";
 				String line = reader.readLine();
 				while (line != null) {
-					System.out.println(line);
-					line = reader.readLine();
+					if((line = reader.readLine()) != null){
+						lastLine = line;
+					}
 				}
-				// Here, line = last line of file
-				if (line == "s SATISFIABLE") {
+				System.out.println(lastLine);
+				if (lastLine.contains("s SATISFIABLE")) {
 					solFound = true;
 					break;
 				}
@@ -64,9 +74,9 @@ public class AlgoRunner {
 		time = System.currentTimeMillis() - time;
 		System.out.println("Duree de la generation de la solution (ms) : " + time);
 		if (solFound)
-			System.out.println("Solution trouvée, stockee dans fichier : " + out);
+			System.out.println("Solution trouvee, stockee dans fichier : " + out);
 		else
-			System.out.println("Pas de solution");
+			System.out.println("Pas de solution ou erreur");
 	}
 
 	private void runAll(RGraph G, Boolean collision) {
