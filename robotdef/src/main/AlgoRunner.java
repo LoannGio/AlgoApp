@@ -36,7 +36,8 @@ public class AlgoRunner {
 		String out = "SATresult";
 		String formula = "SATformula";
 		String glucoseCmd = "glucose-syrup-4.1/simp/glucose";
-		System.out.println("#MODE : SAT - Collision : " + collision);
+		int nbDefendersThatCanDefend = -1;
+		System.out.println("#MODE : SAT");
 
 		time = System.currentTimeMillis();
 		for (int i = 0; i <= 6; i++) {
@@ -61,9 +62,9 @@ public class AlgoRunner {
 						lastLine = line;
 					}
 				}
-				System.out.println(lastLine);
 				if (lastLine.contains("s SATISFIABLE")) {
 					solFound = true;
+					nbDefendersThatCanDefend = i;
 					break;
 				}
 				reader.close();
@@ -73,8 +74,8 @@ public class AlgoRunner {
 		}
 		time = System.currentTimeMillis() - time;
 		System.out.println("Duree de la generation de la solution (ms) : " + time);
-		if (solFound)
-			System.out.println("Solution trouvee, stockee dans fichier : " + out);
+		if (solFound && nbDefendersThatCanDefend >= 0)
+			System.out.println("Solution trouvee avec " + nbDefendersThatCanDefend + " defenseurs stockee dans fichier : " + out);
 		else
 			System.out.println("Pas de solution ou erreur");
 	}
