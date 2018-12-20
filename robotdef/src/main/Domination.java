@@ -3,6 +3,7 @@ package main;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.jgrapht.Graphs;
@@ -119,7 +120,7 @@ public class Domination {
 	 * sommets dans dominating (si collisions = true : cet ensemble sera
 	 * ind�pendant)
 	 */
-	public static <V, E> Set<V> smallestDominatingSetBruteForcePosInit(SimpleGraph<V, E> G, Set<V> dominated,
+	public static <V, E> List<V> smallestDominatingSetBruteForcePosInit(SimpleGraph<V, E> G, Set<V> dominated,
 			Set<V> dominating, ArrayList<Point2D> initPos, boolean collisions) {
 		if(!isDominable(G))
 		{
@@ -144,7 +145,7 @@ public class Domination {
 				}
 			}
 		}
-		return new HashSet<V>(bestPermutation);
+		return bestPermutation;
 	}
 
 	private static <V,E> boolean isDominable(SimpleGraph<V, E> G) {
@@ -213,7 +214,7 @@ public class Domination {
 		return null;
 	}
 
-	public static <V, E> Set<V> dominatingSetGreedyPosInit(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating,
+	public static <V, E> List<V> dominatingSetGreedyPosInit(SimpleGraph<V, E> G, Set<V> dominated, Set<V> dominating,
 			ArrayList<Point2D> initPos, boolean collision) {
 		Set<V> dominatedCopy = new HashSet<V>(dominated);
 		Set<V> dominatingCopy = new HashSet<V>(dominating);
@@ -249,7 +250,7 @@ public class Domination {
 			}
 		}
 
-		return new HashSet<V>(bestPermutation);
+		return bestPermutation;
 	}
 
 	/*

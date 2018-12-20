@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 public class AlgoRunner {
@@ -31,8 +32,8 @@ public class AlgoRunner {
 	private void runSAT(RGraph G, Boolean collision) {
 		long time;
 		Boolean solFound = false;
-		String out = "SATresult";
-		String formula = "SATformula";
+		String out = "solutions/SATresult";
+		String formula = "solutions/SATformula";
 		String glucoseCmd = "glucose-syrup-4.1/simp/glucose";
 		int nbDefendersThatCanDefend = -1;
 		System.out.println("#MODE : SAT");
@@ -80,7 +81,7 @@ public class AlgoRunner {
 
 	private void runPosInit(RGraph G, Boolean collision) {
 		long time;
-		Set<RVertex> solution;
+		List<RVertex> solution;
 		System.out.println("#MODE : Position Initiale - Collision : " + collision);
 
 		// Greedy
@@ -100,7 +101,6 @@ public class AlgoRunner {
 		time = System.currentTimeMillis() - time;
 		System.out.println("Duree de la generation de la solution (ms) : " + time);
 		JSonSolution.saveJSonSolution(solution, "solutionBruteForcePosInit.json");
-
 	}
 
 	private void runMultiGoal(RGraph G, Boolean collision) {

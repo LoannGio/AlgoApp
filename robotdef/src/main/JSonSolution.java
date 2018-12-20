@@ -2,7 +2,7 @@ package main;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Set;
+import java.util.Collection;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 public class JSonSolution {
 
-	public static void saveJSonSolution(Set<RVertex> solution, String fileName) {
+	public static void saveJSonSolution(Collection<RVertex> solution, String fileName) {
 		if(solution == null)
 		{
 			System.out.println("Pas de solution au probleme.");
@@ -44,7 +44,7 @@ public class JSonSolution {
 
 	}
 
-	public static JSONObject generateJSONSolution(Set<RVertex> solution) {
+	public static JSONObject generateJSONSolution(Collection<RVertex> solution) {
 		JSONObject object = new JSONObject();
 		JSONArray listPosition = new JSONArray();
 		for (RVertex v : solution) {
