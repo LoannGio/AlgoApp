@@ -25,8 +25,6 @@ public class AlgoRunner {
 		case "SAT":
 			runSAT(G, collision);
 			break;
-		case "All":
-			runAll(G, collision);
 		}
 	}
 
@@ -78,14 +76,6 @@ public class AlgoRunner {
 			System.out.println("Solution trouvee avec " + nbDefendersThatCanDefend + " defenseurs stockee dans fichier : " + out);
 		else
 			System.out.println("Pas de solution ou erreur");
-	}
-
-	private void runAll(RGraph G, Boolean collision) {
-		runNormal(G, collision);
-		runGoalKeeper(G, collision);
-		runMultiGoal(G, collision);
-		runPosInit(G, collision);
-		runSAT(G, collision);
 	}
 
 	private void runPosInit(RGraph G, Boolean collision) {
