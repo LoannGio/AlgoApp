@@ -127,20 +127,19 @@ public class Domination {
 		}
 		double distMaxMin = Integer.MAX_VALUE;
 		ArrayList<V> bestPermutation = new ArrayList<V>();
-		for (int i = 1; i < initPos.size()+1; i++) {
-			HashSet<HashSet<V>> subsets = SubsetCreator.allSubsetsOfSizeN(dominating, i);
-			for (Set<V> D : subsets) {
-				if (collisions && !Independance.isIndependent(G, D)) {
-					continue;
-				}
-				if (dominates(G, dominated, D)) {
-					ArrayList<ArrayList<V>> permutations = SubsetCreator.permutations(D);
-					for (ArrayList<V> permutation : permutations) {
-						double dist = SmallestLongestDistance(permutation, initPos);
-						if (distMaxMin > dist) {
-							bestPermutation = permutation;
-							distMaxMin = dist;
-						}
+		int nbDefenders = initPos.size();
+		HashSet<HashSet<V>> subsets = SubsetCreator.allSubsetsOfSizeN(dominating, nbDefenders);
+		for (Set<V> D : subsets) {
+			if (collisions && !Independance.isIndependent(G, D)) {
+				continue;
+			}
+			if (dominates(G, dominated, D)) {
+				ArrayList<ArrayList<V>> permutations = SubsetCreator.permutations(D);
+				for (ArrayList<V> permutation : permutations) {
+					double dist = SmallestLongestDistance(permutation, initPos);
+					if (distMaxMin > dist) {
+						bestPermutation = permutation;
+						distMaxMin = dist;
 					}
 				}
 			}
